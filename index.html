@@ -97,7 +97,7 @@
         <!-- 2. Character Selection Screen -->
         <div id="character-select-screen" class="screen">
             <h2 class="text-4xl font-bold text-center mb-10">Choose Your Family</h2>
-            <div class="grid md:grid-cols-3 gap-8">
+            <div class="grid md:grid-cols-4 gap-8">
                 
                 <!-- Family Card 1 -->
                 <div class="theme-card theme-border border-2 rounded-lg p-6 shadow-lg flex flex-col">
@@ -131,6 +131,8 @@
                         <li>Rosa (43, Worker, Undocumented)</li>
                         <li>Mateo (19, Worker, Undocumented)</li>
                         <li>Diego (17, Teen, Undocumented)</li>
+                        <li>Elisa (39, Worker, Undocumented)</li>
+                        <li>Rafael (16, Teen, Undocumented)</li>
                     </ul>
                     <button class="theme-button select-family-btn mt-auto" data-group="1">Choose this Family</button>
                 </div>
@@ -145,9 +147,34 @@
                         <li>Sofia (13, Teen, Pending Asylum)</li>
                         <li>Pedro (22, Worker, Undocumented)</li>
                         <li>Hector (24, Worker, Undocumented)</li>
+                        <li>Jorge (29, Worker, Undocumented)</li>
+                        <li>Marisol (25, Worker, Pending Asylum)</li>
+                        <li>Daniel (14, Teen, Pending Asylum)</li>
+                        <li>Eva (19, Worker, Pending Asylum)</li>
+                        <li>Tomas (60, Elder, Undocumented, Sick)</li>
                     </ul>
                     <button class="theme-button select-family-btn mt-auto" data-group="2">Choose this Family</button>
                 </div>
+
+                <!-- Family Card 4 -->
+                <div class="theme-card theme-border border-2 rounded-lg p-6 shadow-lg flex flex-col">
+                    <h3 class="text-2xl font-bold mb-4">Group 4: The Mixed-Status</h3>
+                    <p class="mb-4 flex-grow">A family with mixed legal statuses. The father is a 2nd-gen U.S. Citizen, but his wife and her sister are undocumented, creating deep conflicts over risk and fear.</p>
+                    <ul class="list-disc list-inside mb-6 text-sm flex-grow">
+                        <li>Arturo (40, Parent, US Citizen)</li>
+                        <li>Brenda (38, Parent, Undocumented)</li>
+                        <li>Jessica (16, Teen, US Citizen)</li>
+                        <li>Mateo (14, Teen, Undocumented)</li>
+                        <li>Valeria (22, Worker, Undocumented)</li>
+                        <li>Ricardo (28, Worker, Undocumented)</li>
+                        <li>Luz (27, Parent, Undocumented)</li>
+                        <li>Beto (13, Teen, Undocumented)</li>
+                        <li>Gloria (15, Teen, Undocumented)</li>
+                        <li>Ramon (59, Elder, Undocumented)</li>
+                    </ul>
+                    <button class="theme-button select-family-btn mt-auto" data-group="3">Choose this Family</button>
+                </div>
+
             </div>
         </div>
 
@@ -281,7 +308,25 @@
                     createChar("Juan", 45, 60, "Sick", 70, "Stable", "Undocumented", "Worker", "Skilled carpenter. His cough is getting worse."),
                     createChar("Rosa", 43, 100, "Healthy", 90, "Stable", "Undocumented", "Worker", "Juan's wife. Practical, a skilled seamstress."),
                     createChar("Mateo", 19, 100, "Healthy", 80, "Stable", "Undocumented", "Worker", "David's nephew. Works hard, sends money home."),
-                    createChar("Diego", 17, 100, "Healthy", 70, "Stressed", "Undocumented", "Teen", "Rosa's nephew. Got into a fight at school.")
+                    createChar("Diego", 17, 100, "Healthy", 70, "Stressed", "Undocumented", "Teen", "Rosa's nephew. Got into a fight at school."),
+                    createChar("Elisa", 39, 100, "Healthy", 80, "Stable", "Undocumented", "Worker", "Rosa's sister. Recently arrived, nervous."),
+                    createChar("Rafael", 16, 100, "Healthy", 60, "Stressed", "Undocumented", "Teen", "Elisa's son. Misses his friends.")
+                ]
+            },
+            {
+                name: "Group 3: The Small Unit",
+                startMoney: 900,
+                members: [
+                    createChar("Ana", 32, 90, "Healthy", 60, "Stressed", "Pending Asylum", "Parent", "Single mother. Fiercely protective and exhausted."),
+                    createChar("Luis", 15, 100, "Healthy", 50, "Stressed", "Pending Asylum", "Teen", "Wants to drop out to help his mom with money."),
+                    createChar("Sofia", 13, 100, "Healthy", 40, "Depressed", "Pending Asylum", "Teen", "Quiet, traumatized by events back home."),
+                    createChar("Pedro", 22, 100, "Healthy", 90, "Stable", "Undocumented", "Worker", "Ana's brother. Impulsive, but loyal."),
+                    createChar("Hector", 24, 100, "Healthy", 90, "Stable", "Undocumented", "Worker", "Family friend. Reliable, has a car."),
+                    createChar("Jorge", 29, 100, "Healthy", 90, "Stable", "Undocumented", "Worker", "Pedro's cousin. Overconfident."),
+                    createChar("Marisol", 25, 100, "Healthy", 80, "Stressed", "Pending Asylum", "Worker", "Ana's friend from home. Lost her husband."),
+                    createChar("Daniel", 14, 100, "Healthy", 60, "Stressed", "Pending Asylum", "Teen", "Marisol's son. Quiet."),
+                    createChar("Eva", 19, 100, "Healthy", 80, "Stable", "Pending Asylum", "Worker", "Ana's distant cousin. Hopeful."),
+                    createChar("Tomas", 60, 70, "Sick", 70, "Stable", "Undocumented", "Elder", "Family friend, watched Ana grow up. Has diabetes.")
                 ]
             },
             {
@@ -293,6 +338,22 @@
                     createChar("Sofia", 13, 100, "Healthy", 40, "Depressed", "Pending Asylum", "Teen", "Quiet, traumatized by events back home."),
                     createChar("Pedro", 22, 100, "Healthy", 90, "Stable", "Undocumented", "Worker", "Ana's brother. Impulsive, but loyal."),
                     createChar("Hector", 24, 100, "Healthy", 90, "Stable", "Undocumented", "Worker", "Family friend. Reliable, has a car.")
+                ]
+            },
+            {
+                name: "Group 4: The Mixed-Status",
+                startMoney: 2000,
+                members: [
+                    createChar("Arturo", 40, 100, "Healthy", 90, "Stable", "US Citizen", "Parent", "2nd gen. Loves his family, but frustrated by their 'fear'."),
+                    createChar("Brenda", 38, 100, "Healthy", 60, "Stressed", "Undocumented", "Parent", "Arturo's wife. Terrified of deportation. Hides from the world."),
+                    createChar("Jessica", 16, 100, "Healthy", 60, "Stressed", "US Citizen", "Teen", "Their daughter. Feels 'American'. Resents her mom's rules."),
+                    createChar("Mateo", 14, 100, "Healthy", 70, "Stressed", "Undocumented", "Teen", "Brenda's son. Scared, quiet. Lives in his sister's shadow."),
+                    createChar("Valeria", 22, 100, "Healthy", 100, "Stable", "Undocumented", "Worker", "Brenda's sister. Just arrived. Grateful, but naive."),
+                    createChar("Ricardo", 28, 100, "Healthy", 90, "Stable", "Undocumented", "Worker", "Brenda's brother. Here to work."),
+                    createChar("Luz", 27, 100, "Healthy", 80, "Stressed", "Undocumented", "Parent", "Ricardo's wife. Worried about her children."),
+                    createChar("Beto", 13, 100, "Healthy", 70, "Stressed", "Undocumented", "Teen", "Ricardo's son. Adjusting."),
+                    createChar("Gloria", 15, 100, "Healthy", 60, "Stressed", "Undocumented", "Teen", "Ricardo's daughter. Wants to be like Jessica."),
+                    createChar("Ramon", 59, 80, "Healthy", 70, "Stable", "Undocumented", "Elder", "Brenda's uncle. Traditional, doesn't trust Arturo.")
                 ]
             }
         ];
@@ -1023,6 +1084,205 @@
                         ]
                     }
                 ]
+            },
+            {
+                groupIndex: 3, // For Group 4
+                scenarios: [
+                    {
+                        title: "Scenario 1: The Insurance Card (Health Access)",
+                        description: "Mateo (14, Undocumented) is in agony with a suspected appendicitis. Arturo (Citizen) wants to take him to the ER and use his job's insurance, which *technically* covers Mateo as a 'dependent'. Brenda (Undocumented) is terrified this will expose Mateo's status and her own. This is a 'barrier to care' created by *fear* and legal status, not just money.",
+                        desires: {
+                            'Parent (Arturo)': "He's on my insurance, we're going. This is what it's for. Stop being paranoid! He's my son!",
+                            'Parent (Brenda)': "No! They will ask for his social security number! They'll take him! They'll take me! Let's just wait, maybe it's just gas.",
+                            'Teen (Mateo)': "It hurts... it hurts so much... but I don't want to cause trouble, Arturo.",
+                            'Teen (Jessica)': "Dad is right! This is America, he's sick! Let's go! Why are you letting him suffer, Mom?"
+                        },
+                        choices: [
+                            {
+                                text: "Go to the ER, use Arturo's insurance. (Risk: Exposure)",
+                                effect: (state) => {
+                                    let mateo = state.family.find(c => c.name === "Mateo");
+                                    mateo.health = Math.min(100, mateo.health + 40);
+                                    mateo.notes = "Appendectomy, recovered.";
+                                    let result = `You go to the ER. The insurance works! They perform the appendectomy. Mateo is safe and recovers fully.`;
+                                    
+                                    if(Math.random() < 0.25) { // 25% chance of audit
+                                        state.family.forEach(c => c.mentalHealth = Math.max(0, c.mentalHealth - 20));
+                                        let arturo = state.family.find(c => c.name === "Arturo");
+                                        let brenda = state.family.find(c => c.name === "Brenda");
+                                        arturo.notes = "Under investigation at work";
+                                        brenda.notes = "Terrified of audit";
+                                        result += ` ...However, a week later, Arturo's employer flags the insurance claim. He is now under investigation for fraud. The entire family is 'Stressed'.`;
+                                    } else { // 75% chance it's fine
+                                        state.family.forEach(c => c.mentalHealth = Math.min(100, c.mentalHealth + 5));
+                                        result += ` It seems no one noticed or cared. You feel a massive wave of relief.`;
+                                    }
+                                    return result;
+                                }
+                            },
+                            {
+                                text: "Go to a 'cash' clinic far away. ($-1500)",
+                                effect: (state) => {
+                                    state.money -= 1500;
+                                    let mateo = state.family.find(c => c.name === "Mateo");
+                                    mateo.health = Math.min(100, mateo.health + 40);
+                                    mateo.notes = "Appendectomy, recovered.";
+                                    return `You pay $1500 in cash at a clinic in another town. They do the surgery, no questions asked. Mateo is safe, but your savings are wiped out.`;
+                                }
+                            },
+                            {
+                                text: "Brenda takes Mateo to the ER alone, pretends to be uninsured. ($2000+ debt)",
+                                effect: (state) => {
+                                    state.money -= 2000; // Go into debt
+                                    let mateo = state.family.find(c => c.name === "Mateo");
+                                    let brenda = state.family.find(c => c.name === "Brenda");
+                                    mateo.health = Math.min(100, mateo.health + 40);
+                                    mateo.notes = "Recovered, but in debt";
+                                    brenda.mentalHealth = Math.max(0, brenda.mentalHealth - 15); // Stress
+                                    return `Brenda takes Mateo, separating herself from Arturo. She is treated as 'uninsured'. Mateo gets the surgery, but the family is now in $2000 of medical debt. Brenda is stressed, but feels she protected Arturo.`;
+                                }
+                            },
+                            {
+                                text: "Wait. Give him herbs and pray. ($0)",
+                                effect: (state) => {
+                                    let mateo = state.family.find(c => c.name === "Mateo");
+                                    let result = `Brenda's fear wins. You wait. `;
+                                    if(Math.random() < 0.7) { // 70% chance it ruptures
+                                        mateo.health = Math.max(0, mateo.health - 60);
+                                        mateo.notes = "Appendix ruptured, critical!";
+                                        state.family.forEach(c => c.mentalHealth = Math.max(0, c.mentalHealth - 40));
+                                        result += `Mateo's appendix ruptures. You are forced to call 911. He is now in 'Critical' condition, and the family is 'Depressed' from the guilt and fear.`;
+                                    } else { // 30% chance it was just gas
+                                        mateo.mentalHealth = Math.max(0, mateo.mentalHealth - 10);
+                                        result += `Incredibly, after a painful night, the pain subsides. It must have been severe gas. You got lucky, but Mateo is shaken.`;
+                                    }
+                                    return result;
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        title: "Scenario 2: The Driver's License (Acculturative Stress)",
+                        description: "Jessica (16, citizen) is eligible for a driver's license, a normal 'American' milestone. But for Brenda (Undocumented), it's a source of terror. It represents Jessica's independence and integration into a world Brenda can't access. It's a severe 'acculturative stressor' that threatens the family's mental health and 'familismo'.",
+                        desires: {
+                            'Teen (Jessica)': "Everyone has one! I can help drive! I can get a job! Why are you trying to keep me a prisoner? You don't trust me!",
+                            'Parent (Arturo)': "She's right, 'mija'. She's an American kid. This is a good thing. She can help you with groceries.",
+                            'Parent (Brenda)': "No. It's too dangerous. And... and... I need you here. If you can drive, you won't need us. You'll... you'll leave.",
+                            'Worker (Valeria)': "Brenda, I think he's right. In this country, a car is freedom. We don't have that, but she can."
+                        },
+                        choices: [
+                            {
+                                text: "Arturo takes Jessica to get her license. (Brenda's fear vs. Jessica's assimilation)",
+                                effect: (state) => {
+                                    let jessica = state.family.find(c => c.name === "Jessica");
+                                    let brenda = state.family.find(c => c.name === "Brenda");
+                                    jessica.mentalHealth = Math.min(100, jessica.mentalHealth + 20);
+                                    jessica.notes = "Has her license! Assimilating.";
+                                    brenda.mentalHealth = Math.max(0, brenda.mentalHealth - 25);
+                                    brenda.notes = "Feels abandoned, losing her daughter.";
+                                    return `Arturo overrules Brenda. Jessica gets her license and is overjoyed, feeling 'normal' for the first time. Brenda is 'Depressed', feeling she is losing her daughter to a world she can't be part of.`;
+                                }
+                            },
+                            {
+                                text: "Brenda forbids it. The family must stay together. (Jessica's mental health suffers)",
+                                effect: (state) => {
+                                    let jessica = state.family.find(c => c.name === "Jessica");
+                                    let brenda = state.family.find(c => c.name === "Brenda");
+                                    jessica.mentalHealth = Math.max(0, jessica.mentalHealth - 30);
+                                    jessica.notes = "Resentful, trapped.";
+                                    brenda.mentalHealth = Math.min(100, brenda.mentalHealth + 10);
+                                    brenda.notes = "Feels safe, but family is tense.";
+                                    return `Brenda puts her foot down. Jessica is forbidden. The fight is terrible. Jessica is now 'Depressed' and resentful, and the 'acculturative stress' in the house is higher than ever.`;
+                                }
+                            },
+                            {
+                                text: "Compromise: She can get it, but can *only* drive for family errands.",
+                                effect: (state) => {
+                                    let jessica = state.family.find(c => c.name === "Jessica");
+                                    jessica.mentalHealth = Math.max(0, jessica.mentalHealth - 10);
+                                    jessica.notes = "Has license, but with strict rules.";
+                                    return `You force a compromise. Jessica gets the license but is only allowed to drive her parents to work and for groceries. She resents the rules but has some freedom. The conflict is delayed, not solved.`;
+                                }
+                            },
+                            {
+                                text: "Postpone: 'Maybe next year, when things are more stable.'",
+                                effect: (state) => {
+                                    let jessica = state.family.find(c => c.name === "Jessica");
+                                    let brenda = state.family.find(c => c.name === "Brenda");
+                                    jessica.mentalHealth = Math.max(0, jessica.mentalHealth - 10);
+                                    jessica.notes = "Disappointed, resentful.";
+                                    brenda.mentalHealth = Math.max(0, brenda.mentalHealth - 5);
+                                    return `You kick the can down the road. Jessica is angry, and Brenda is still anxious. Nothing is solved, and the 'acculturative stress' continues to simmer.`;
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        title: "Scenario 3: The Stolen Wages (Chilling Effect)",
+                        description: "Valeria (new arrival) worked for two weeks at a car wash, and her boss won't pay her. He's holding her bag with her (fake) documents. This is a 'lack of accessibility' to the justice system. Arturo (citizen) is outraged. Brenda (undocumented) is terrified, a perfect example of the 'chilling effect' where legal status prevents reporting crimes.",
+                        desires: {
+                            'Parent (Arturo)': "This is theft. It's illegal. We are going to the police and filing a report. We are not weak.",
+                            'Parent (Brenda)': "NO POLICE. Never. The money is gone. The papers are gone. We will be silent. Calling them is a death sentence. You don't understand!",
+                            'Worker (Valeria)': "My... my papers were in that bag. I'm so scared. But... all that work... for nothing?",
+                            'Teen (Jessica)': "Dad's right. That's so messed up! We should sue him! We're citizens! (Well, *we* are...)"
+                        },
+                        choices: [
+                            {
+                                text: "Arturo calls the police and reports the theft.",
+                                effect: (state) => {
+                                    let valeria = state.family.find(c => c.name === "Valeria");
+                                    let result = `Arturo calls the police, who are dismissive. They ask 'Does she have a valid work visa?'. `;
+                                    if(Math.random() < 0.3) { // 30% chance they investigate
+                                        state.money += 400;
+                                        valeria.notes = "Got her money back.";
+                                        result += `Surprisingly, the police scare the boss, and he pays Valeria. A small victory, but Brenda is now 'Stressed' from the police contact.`;
+                                    } else { // 70% chance they call ICE
+                                        valeria.notes = "Detained, deportation";
+                                        state.family.forEach(c => c.mentalHealth = Math.max(0, c.mentalHealth - 40));
+                                        result += `The police report her as 'illegal'. An hour later, ICE agents show up at the car wash. Valeria is detained. Arturo's attempt to use the system got his sister-in-law deported. The family is 'Depressed'.`;
+                                    }
+                                    return result;
+                                }
+                            },
+                            {
+                                text: "Do nothing. The money and papers are lost. ($-400)",
+                                effect: (state) => {
+                                    let valeria = state.family.find(c => c.name === "Valeria");
+                                    valeria.mentalHealth = Math.max(0, valeria.mentalHealth - 30);
+                                    valeria.notes = "Defeated, no papers.";
+                                    state.family.forEach(c => c.mentalHealth = Math.max(0, c.mentalHealth - 5));
+                                    return `You do nothing. Valeria loses $400 in wages and her documents. She is 'Depressed' and learns a hard lesson: she has no rights here. The family feels defeated.`;
+                                }
+                            },
+                            {
+                                text: "Arturo (citizen) goes alone to confront the boss.",
+                                effect: (state) => {
+                                    let arturo = state.family.find(c => c.name === "Arturo");
+                                    let result = `Arturo goes to the car wash, flashing his (real) ID. He demands his sister's pay. `;
+                                    if(Math.random() < 0.5) { // 50% chance of success
+                                        state.money += 400;
+                                        arturo.mentalHealth = Math.min(100, arturo.mentalHealth + 10);
+                                        result += `The boss, fearing a 'real' citizen, backs down. He gives Arturo the $400. Arturo feels proud.`;
+                                    } else { // 50% chance of violence
+                                        arturo.health = Math.max(20, arturo.health - 30);
+                                        arturo.notes = "Beaten up, 'Sick'";
+                                        result += `The boss and his friends laugh and beat Arturo up. He comes home 'Sick' and with no money. He learned that his citizenship doesn't always protect him.`;
+                                    }
+                                    return result;
+                                }
+                            },
+                            {
+                                text: "Call a worker's rights non-profit for help. ($0)",
+                                effect: (state) => {
+                                    let valeria = state.family.find(c => c.name === "Valeria");
+                                    valeria.mentalHealth = Math.max(0, valeria.mentalHealth - 10);
+                                    valeria.notes = "Waiting for help...";
+                                    return `You call a legal aid center. They take Valeria's case. They say it will take months, but they will fight for her. You have no money, but you have a small amount of hope, balanced by the stress of waiting.`;
+                                }
+                            }
+                        ]
+                    }
+                ]
             }
         ];
 
@@ -1309,4 +1569,5 @@
     </script>
 </body>
 </html>
+
 
