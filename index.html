@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Travesía</title>
+    <!-- Imports Google Fonts for styling -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS for utility-first styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        /* Custom styles to supplement Tailwind */
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: #fdfaf5; /* Parchment white */
+            color: #3d352e; /* Dark brown */
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Merriweather', serif;
+            color: #5a4a3e; /* Darker taupe */
+        }
+
+        /* Thematic colors */
+        .theme-bg { background-color: #fdfaf5; }
+        .theme-text { color: #3d352e; }
+        .theme-border { border-color: #e0d5c4; }
+        .theme-card { background-color: #ffffff; }
+        .theme-button {
+            background-color: #c7a07b; /* Dusty warm tan */
+            color: #ffffff;
+            font-weight: bold;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            border-bottom: 3px solid #b8916e;
+        }
+        .theme-button:hover {
+            background-color: #b8916e;
+            transform: translateY(-2px);
+        }
+        .theme-button:active {
+            transform: translateY(1px);
+        }
+
+        /* Character health status colors */
+        .status-healthy { color: #28a745; } /* Green */
+        .status-sick { color: #fd7e14; } /* Orange */
+        .status-critical { color: #dc3545; } /* Red */
+        .status-deceased { color: #6c757d; text-decoration: line-through; } /* Gray */
+
+        /* Mental health status colors */
+        .status-stable { color: #28a745; } /* Green */
+        .status-stressed { color: #fd7e14; } /* Orange */
+        .status-depressed { color: #dc3545; } /* Red */
+
+        /* Legal status colors */
+        .status-undocumented { color: #dc3545; } /* Red */
+        .status-pending { color: #fd7e14; } /* Orange */
+        .status-asylum { color: #fd7e14; } /* Orange */
+        .status-resident { color: #28a745; } /* Green */
+
+
+        /* Screen transition */
+        .screen {
+            display: none; /* Hidden by default */
+        }
+        .screen.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="theme-bg theme-text min-h-screen p-4 md:p-8">
+
+    <!-- Main Application Container -->
+    <div id="app" class="max-w-6xl mx-auto">
+
+        <!-- 1. Start Screen -->
+        <div id="start-screen" class="screen active text-center p-8 md:p-16">
+            <h1 class="text-5xl md:text-6xl font-bold mb-4">La Travesía</h1>
+            <p class="text-xl md:text-2xl text-gray-600 mb-12">A Game of Family, Sacrifice, and Survival</p>
+            <p class="max-w-2xl mx-auto mb-12 text-lg">
+                This is a collaborative game. You will make decisions as a group.
+                Discuss each scenario with your fellow players before choosing a path.
+                The goal is to understand the difficult choices immigrant families face.
+            </p>
+            <button id="start-button" class="theme-button text-xl">Begin the Journey</button>
+        </div>
+
+        <!-- 2. Character Selection Screen -->
+        <div id="character-select-screen" class="screen">
+            <h2 class="text-4xl font-bold text-center mb-10">Choose Your Family</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                
+                <!-- Family Card 1 -->
+                <div class="theme-card theme-border border-2 rounded-lg p-6 shadow-lg flex flex-col">
+                    <h3 class="text-2xl font-bold mb-4">Group 1: The Elders</h3>
+                    <p class="mb-4 flex-grow">A large, multi-generational family led by the grandmother. Her health is fragile, and the family is large, with multiple teens.</p>
+                    <ul class="list-disc list-inside mb-6 text-sm flex-grow">
+                        <li>Sick Grandma (70s)</li>
+                        <li>Son #1 (40s, single)</li>
+                        <li>Son #2 (30s) & Wife</li>
+                        <li>- Teen Son & Teen Girl</li>
+                        <li>Daughter #1 (30s) & Husband</li>
+                        <li>- Teen Girl & Adult Son (20s)</li>
+                    </ul>
+                    <button class="theme-button select-family-btn mt-auto" data-group="0">Choose this Family</button>
+                </div>
+
+                <!-- Family Card 2 -->
+                <div class="theme-card theme-border border-2 rounded-lg p-6 shadow-lg flex flex-col">
+                    <h3 class="text-2xl font-bold mb-4">Group 2: The Professionals</h3>
+                    <p class="mb-4 flex-grow">A couple who were professionals in their home country, now with their teenage children and an uncle who is a skilled laborer.</p>
+                     <ul class="list-disc list-inside mb-6 text-sm flex-grow">
+                        <li>Husband (42, former accountant)</li>
+                        <li>Wife (40, former teacher)</li>
+                        <li>Teen Son (16) & Teen Daughter (14)</li>
+                        <li>Uncle (45, skilled, sick)</li>
+                        <li>Aunt (43)</li>
+                        <li>Cousin (19) & Cousin (17)</li>
+                    </ul>
+                    <button class="theme-button select-family-btn mt-auto" data-group="1">Choose this Family</button>
+                </div>
+
+                <!-- Family Card 3 -->
+                <div class="theme-card theme-border border-2 rounded-lg p-6 shadow-lg flex flex-col">
+                    <h3 class="text-2xl font-bold mb-4">Group 3: The Small Unit</h3>
+                    <p class="mb-4 flex-grow">A single mother fleeing a dangerous situation with her two children and her younger brother. She has very little money but is desperate to find safety.</p>
+                    <ul class="list-disc list-inside mb-6 text-sm flex-grow">
+                        <li>Mother (32)</li>
+                        <li>Teenage Son (15)</li>
+                        <li>Daughter (13)</li>
+                        <li>Younger Brother (22)</li>
+                        <li>Family Friend (24)</li>
+                    </ul>
+                    <button class="theme-button select-family-btn mt-auto" data-group="2">Choose this Family</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Main Game Screen -->
+        <div id="game-screen" class="screen">
+            <!-- Header Stats -->
+            <div class="theme-card theme-border border rounded-lg p-6 shadow mb-8">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <h2 class="text-3xl font-bold mb-4 md:mb-0">Family Resources</h2>
+                    <div class="text-2xl font-bold theme-text">
+                        Money: $<span id="money-stat">1500</span>
+                    </div>
+                </div>
+                <hr class="my-4 theme-border">
+                <!-- Family Status Container -->
+                <h3 class="text-xl font-bold mb-4">Family Status</h3>
+                <div id="family-status-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                    <!-- Character cards will be injected here by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Scenario & Result Container -->
+            <div class="theme-card theme-border border rounded-lg p-6 md:p-8 shadow-lg">
+                <!-- Scenario View -->
+                <div id="scenario-view">
+                    <h2 id="scenario-title" class="text-3xl font-bold mb-6">Scenario Title</h2>
+                    <p id="scenario-description" class="text-lg mb-8 leading-relaxed">Scenario description goes here. Read carefully and discuss with your group.</p>
+                    
+                    <h3 class="text-xl font-bold mb-4">Family Perspectives:</h3>
+                    <div id="desires-container" class="mb-6 space-y-2 text-gray-700 italic border-l-4 theme-border pl-4">
+                        <!-- Character desires will be injected here -->
+                    </div>
+
+                    <h3 class="text-xl font-bold mb-4">Your Decision:</h3>
+                    <div id="choices-container" class="flex flex-col space-y-4">
+                        <!-- Choice buttons will be injected here by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Result View (starts hidden) -->
+                <div id="result-view" style="display: none;">
+                    <h2 id="result-title" class="text-3xl font-bold mb-6">Outcome</h2>
+                    <p id="result-text" class="text-lg mb-8 leading-relaxed">The result of your choice will appear here.</p>
+                    <button id="next-scenario-btn" class="theme-button">Continue</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 4. End Screen -->
+        <div id="end-screen" class="screen">
+            <div class="theme-card theme-border border rounded-lg p-8 md:p-12 shadow-lg text-center">
+                <h1 class="text-4xl font-bold mb-6">The First Chapter is Written</h1>
+                <p class="text-lg mb-8 leading-relaxed max-w-3xl mx-auto">
+                    You have faced the first set of challenges on your journey.
+                    Your family's situation is a direct result of the hard choices you made together.
+                    There is no "right" or "wrong" path, only consequences.
+                </p>
+
+                <div class="text-left max-w-2xl mx-auto mb-8">
+                    <h3 class="text-2xl font-bold mb-4 text-center">Final Status</h3>
+                    <div class="text-2xl font-bold theme-text text-center mb-6">
+                        Final Money: $<span id="final-money">0</span>
+                    </div>
+                    <h4 class="text-xl font-bold mb-4">Family Members:</h4>
+                    <div id="final-family-status" class="grid grid-cols-2 gap-4">
+                        <!-- Final family status injected here -->
+                    </div>
+                </div>
+
+                <p id="final-summary-text" class="text-lg italic my-8 max-w-3xl mx-auto">
+                    <!-- Final summary text injected here -->
+                </p>
+
+                <button id="restart-btn" class="theme-button text-lg">Play Again</button>
+            </div>
+        </div>
+
+    </div> <!-- End #app -->
+
+    <script>
+        // --- GAME STATE ---
+        let gameState = {
+            screen: 'start',
+            family: [],
+            money: 0,
+            currentScenarioIndex: 0
+        };
+
+        // --- GAME DATA ---
+
+        // Helper function to create character objects
+        const createChar = (name, age, health, healthStatus, mentalHealth, mentalHealthStatus, legalStatus, role, notes = "") => ({
+            id: crypto.randomUUID(),
+            name,
+            age,
+            health,
+            healthStatus, // 'Healthy', 'Sick', 'Critical'
+            mentalHealth,
+            mentalHealthStatus, // 'Stable', 'Stressed', 'Depressed'
+            legalStatus,  // 'Undocumented', 'Pending Asylum', 'Resident'
+            role,         // 'Elder', 'Parent', 'Worker', 'Teen'
+            notes
+        });
+
+        const familyGroups = [
+            {
+                name: "Group 1: The Elders",
+                startMoney: 1800,
+                members: [
+                    createChar("Grandma Elena", 72, 40, "Sick", 80, "Stable", "Undocumented", "Elder", "Frail, needs medicine"),
+                    createChar("Son Miguel", 45, 100, "Healthy", 100, "Stable", "Undocumented", "Worker", "Single, strong"),
+                    createChar("Son Roberto", 38, 100, "Healthy", 100, "Stable", "Undocumented", "Parent", "Works cash jobs"),
+                    createChar("Wife Sofia", 36, 100, "Healthy", 100, "Stable", "Undocumented", "Parent", "Wife of Roberto"),
+                    createChar("Teen Isabel", 15, 100, "Healthy", 70, "Stressed", "Pending Asylum", "Teen", "Daughter of R&S"),
+                    createChar("Teen Marco", 17, 100, "Healthy", 60, "Stressed", "Pending Asylum", "Teen", "Son of R&S, restless"),
+                    createChar("Daughter Luisa", 35, 100, "Healthy", 100, "Stable", "Undocumented", "Parent"),
+                    createChar("Husband Javier", 37, 100, "Healthy", 100, "Stable", "Undocumented", "Worker", "Husband of Luisa"),
+                    createChar("Teen Carmen", 16, 100, "Healthy", 70, "Stressed", "Pending Asylum", "Teen", "Daughter of L&J"),
+                    createChar("Adult Carlos", 20, 100, "Healthy", 90, "Stable", "Undocumented", "Worker", "Son of L&J")
+                ]
+            },
+            {
+                name: "Group 2: The Professionals",
+                startMoney: 2200,
+                members: [
+                    createChar("Husband David", 42, 100, "Healthy", 90, "Stable", "Pending Asylum", "Parent", "Former accountant"),
+                    createChar("Wife Maria", 40, 100, "Healthy", 90, "Stable", "Pending Asylum", "Parent", "Former teacher"),
+                    createChar("Teen Son Leo", 16, 100, "Healthy", 60, "Stressed", "Pending Asylum", "Teen", "Good student"),
+                    createChar("Teen Daughter Julia", 14, 100, "Healthy", 50, "Stressed", "Pending Asylum", "Teen", "Struggling with English"),
+                    createChar("Uncle Juan", 45, 60, "Sick", 80, "Stable", "Undocumented", "Worker", "Skilled carpenter, cough"),
+                    createChar("Aunt Rosa", 43, 100, "Healthy", 90, "Stable", "Undocumented", "Worker", "Wife of Juan"),
+                    createChar("Cousin Mateo", 19, 100, "Healthy", 80, "Stable", "Undocumented", "Worker"),
+                    createChar("Cousin Diego", 17, 100, "Healthy", 70, "Stressed", "Undocumented", "Teen")
+                ]
+            },
+            {
+                name: "Group 3: The Small Unit",
+                startMoney: 900,
+                members: [
+                    createChar("Mother Ana", 32, 90, "Healthy", 70, "Stressed", "Pending Asylum", "Parent", "Very stressed"),
+                    createChar("Teen Son Luis", 15, 100, "Healthy", 60, "Stressed", "Pending Asylum", "Teen", "Wants to work"),
+                    createChar("Daughter Sofia", 13, 100, "Healthy", 50, "Stressed", "Pending Asylum", "Teen", "Scared, quiet"),
+                    createChar("Brother Pedro", 22, 100, "Healthy", 90, "Stable", "Undocumented", "Worker", "Protective"),
+                    createChar("Friend Hector", 24, 100, "Healthy", 90, "Stable", "Undocumented", "Worker", "Owes Ana a debt")
+                ]
+            }
+        ];
+
+        // --- NEW, MORE INTRICATE SCENARIOS ---
+
+        const scenarios = [
+            {
+                title: "Scenario 1: The Workplace Injury",
+                description: "One of your family's main 'Workers' falls from a ladder at a cash-only construction site and is badly injured. Their leg is clearly broken. The employer, who is also an immigrant, offers you $1000 cash to *not* go to the hospital and to say it happened at home. If you go to the hospital and tell the truth, he will fire the worker, deny they ever worked there, and blacklist your family.",
+                desires: {
+                    'Elder': "A broken bone must be set properly, or he will be crippled for life. This is not a cold. But making an enemy of a man who gives us work is dangerous.",
+                    'Parent': "This is illegal! He is exploiting us! We must go to the hospital and file a report. We have rights! My child's health is not for sale.",
+                    'Worker': "I am in so much pain, but if I lose this job... if we all get blacklisted... how do we eat? $1000 is a lot of money. Maybe it's enough for a 'huesero' (bone-setter).",
+                    'Teen': "This is crazy! You have to go to the hospital! That guy is a criminal! We should sue him!"
+                },
+                choices: [
+                    {
+                        text: "Go to the ER, tell the truth, and file a report ($0).",
+                        effect: (state) => {
+                            let injured = state.family.find(c => c.role === "Worker");
+                            let workers = state.family.filter(c => c.role ==="Worker");
+                            
+                            injured.health = Math.min(100, injured.health + 40);
+                            injured.notes = "Recovering, but fired";
+                            
+                            workers.forEach(w => {
+                                w.mentalHealth = Math.max(0, w.mentalHealth - 20); // Stress
+                                w.notes = "Blacklisted from job site";
+                            });
+
+                            return `You go to the ER. The hospital treats ${injured.name} and the leg will heal properly. You file a worker's compensation claim. The employer is furious. ${injured.name} is fired, and all other family 'Workers' are told not to come back. You have no income, but you stood up for your rights.`;
+                        }
+                    },
+                    {
+                        text: "Go to the ER, but lie and say it happened at home ($1500 bill).",
+                        effect: (state) => {
+                            let injured = state.family.find(c => c.role === "Worker");
+                            let parents = state.family.filter(c => c.role === "Parent");
+                            
+                            if (state.money < 1500) {
+                                state.money -= 1500; // Go into debt
+                            } else {
+                                state.money -= 1500;
+                            }
+                            
+                            injured.health = Math.min(100, injured.health + 40);
+                            injured.notes = "Recovering, job is safe";
+                            parents.forEach(p => p.mentalHealth = Math.max(0, p.mentalHealth - 15)); // Guilt/stress
+
+                            return `You rush ${injured.name} to the ER and lie. The doctors are suspicious but treat the leg. You receive a bill for $1500, putting you in serious debt. The employer is relieved and the job is safe... for now. The 'Parents' feel the shame of the lie.`;
+                        }
+                    },
+                    {
+                        text: "Take the $1000 cash, go to a 'huesero' / bone-setter ($100).",
+                        effect: (state) => {
+                            state.money += 900;
+                            let injured = state.family.find(c => c.role === "Worker");
+                            let result = `You take the $1000 and pay a local bone-setter $100. ${injured.name} is in agony as the bone is set without anesthesia. `;
+                            injured.mentalHealth = Math.max(0, injured.mentalHealth - 20); // Trauma of procedure
+
+                            if (Math.random() < 0.5) { // 50% chance of bad outcome
+                                injured.health = Math.max(20, injured.health - 30);
+                                injured.healthStatus = "Critical";
+                                injured.notes = "Permanent limp, botched healing";
+                                result += "The healing is bad. ${injured.name} now has a permanent, painful limp and their health is critical.";
+                            } else {
+                                injured.health = Math.min(80, injured.health + 10);
+                                injured.notes = "Healed with a limp, but can work";
+                                result += `It seems to work. The leg heals, but with a slight limp. ${injured.name} can still work, and you have $900 in your pocket.`;
+                            }
+                            return result;
+                        }
+                    },
+                    {
+                        text: "Take the $1000 cash, do nothing but rest ($+1000).",
+                        effect: (state) => {
+                            state.money += 1000;
+                            let injured = state.family.find(c => c.role === "Worker");
+                            injured.health = Math.max(10, injured.health - 50);
+                            injured.healthStatus = "Critical";
+                            injured.notes = "Crippled, badly healed leg";
+                            state.family.forEach(c => c.mentalHealth = Math.max(0, c.mentalHealth - 10)); // Family-wide stress
+
+                            return `You take the $1000, desperate for the money. You do nothing for the leg except rest it. ${injured.name} is in constant pain and the leg heals badly, leaving them crippled. They can no longer work. The entire family is stressed and depressed by this outcome.`;
+                        }
+                    }
+                ]
+            },
+            {
+                title: "Scenario 2: The Cultural Divide",
+                description: "Your 'Teen' is adapting well—perhaps *too* well. They speak English almost exclusively, are embarrassed by your customs, and want to go to a school dance with an American classmate. This is causing a huge fight. The 'Elders' and 'Parents' are deeply uncomfortable, feeling they are 'losing' their child to American culture and that it's disrespectful.",
+                desires: {
+                    'Elder': "This is a matter of respect. A child does not question their family or forget who they are. This is the first step to forgetting us entirely. They must be forbidden.",
+                    'Parent': "We came here for a better *life*, not to lose our child. This new culture is too fast, too loud. How do we protect them without pushing them away?",
+                    'Worker': "Let the kid go. Who cares? If they are happy, they will do well in school. If they are 'American,' they can help us all navigate this place. It's not a big deal.",
+                    'Teen': "It's just a dance! Why are you so old-fashioned? I finally have friends, and you're trying to ruin it! I hate being different! You just don't understand."
+                },
+                choices: [
+                    {
+                        text: "Forbid the teen from going. Family values come first.",
+                        effect: (state) => {
+                            let teen = state.family.find(c => c.role === "Teen");
+                            let parents = state.family.filter(c => c.role === "Parent" || c.role === "Elder");
+                            
+                            teen.mentalHealth = Math.max(0, teen.mentalHealth - 30); // Despair/rebellion
+                            teen.notes = "Resentful and withdrawn";
+                            parents.forEach(p => p.mentalHealth = Math.min(100, p.mentalHealth + 10)); // Feel in control
+
+                            return `You forbid ${teen.name} from going. The teen explodes in anger and locks themselves in their room, feeling like a prisoner. The 'Parents' and 'Elders' feel they have maintained order, but a deep rift has formed in the family.`;
+                        }
+                    },
+                    {
+                        text: "Let the teen go. They need to live their own life.",
+                        effect: (state) => {
+                            let teen = state.family.find(c => c.role === "Teen");
+                            let parents = state.family.filter(c => c.role === "Parent" || c.role === "Elder");
+
+                            teen.mentalHealth = Math.min(100, teen.mentalHealth + 20); // Happy, integrated
+                            teen.notes = "Assimilating well";
+                            parents.forEach(p => p.mentalHealth = Math.max(0, p.mentalHealth - 20)); // Stress, fear of loss
+
+                            return `You let ${teen.name} go. They are overjoyed and feel trusted. The 'Parents' and 'Elders' spend the night sick with worry, feeling they have lost control and that their child is becoming a stranger.`;
+                        }
+                    },
+                    {
+                        text: "Compromise: Let them go, but an adult 'Worker' must chaperone.",
+                        effect: (state) => {
+                            let teen = state.family.find(c => c.role === "Teen");
+                            let worker = state.family.find(c => c.role === "Worker");
+                            
+                            teen.mentalHealth = Math.max(0, teen.mentalHealth - 10); // Embarrassed
+                            teen.notes = "Embarrassed but went";
+                            if (worker) {
+                                worker.mentalHealth = Math.max(0, worker.mentalHealth - 10); // Annoyed, lost free time
+                            }
+
+                            return `You force a compromise. ${teen.name} is mortified but agrees to go with ${worker.name} as a chaperone. The teen doesn't have fun, and the worker is annoyed to waste a Friday night. The 'Parents' feel slightly better, but nobody is happy.`;
+                        }
+                    },
+                    {
+                        text: "Hold a big family dinner instead to 'remind' the teen of their culture ($100).",
+                        effect: (state) => {
+                            if (state.money < 100) {
+                                return "You can't afford a special dinner. The argument continues.";
+                            }
+                            state.money -= 100;
+                            let teen = state.family.find(c => c.role === "Teen");
+                            let parents = state.family.filter(c => c.role === "Parent" || c.role === "Elder");
+
+                            teen.mentalHealth = Math.max(0, teen.mentalHealth - 20); // Feels punished
+                            teen.notes = "Resentful";
+                            parents.forEach(p => p.mentalHealth = Math.min(100, p.mentalHealth + 10));
+
+                            return `You spend $100 on a big 'family values' dinner. The 'Elders' and 'Parents' feel good, but the ${teen.name} feels punished and misunderstood. The core issue is unresolved, and the teen's resentment grows.`;
+                        }
+                    }
+                ]
+            },
+            {
+                title: "Scenario 3: The Stolen Wages",
+                description: "One of your 'Undocumented' family members (a 'Worker') is a victim of wage theft. Their boss refuses to pay them $800 in back pay, knowing they have no legal recourse. A non-profit lawyer says they *might* be able to help, which could lead to a T-Visa (for trafficking/exploitation victims). But it could also get the worker blacklisted from all local cash jobs... or worse, reported to ICE.",
+                desires: {
+                    'Elder': "Let it go. We are guests in this country. Do not make noise. It is the price we pay. We will find other work. $800 is not worth deportation.",
+                    'Parent': "This is pure exploitation. This is theft. We must talk to the lawyer. This is why these people keep doing this to us—because we are silent and afraid.",
+                    'Worker': "He stole from me! $800 is a month's rent! I want to fight. But if I talk, and he calls 'la migra'? What if *none* of us can find work after this? Is it worth the risk?",
+                    'Teen': "That's illegal! You have to report him! We should post his name on social media and tell everyone what he did!"
+                },
+                choices: [
+                    {
+                        text: "Contact the non-profit lawyer and file a claim.",
+                        effect: (state) => {
+                            let victim = state.family.find(c => c.legalStatus === "Undocumented" && c.role === "Worker");
+                            let parents = state.family.filter(c => c.role === "Parent");
+                            let result = "";
+
+                            if (Math.random() < 0.5) { // 50% chance of success
+                                state.money += 800;
+                                if(victim) {
+                                    victim.legalStatus = "Pending";
+                                    victim.notes = "T-Visa applicant";
+                                }
+                                parents.forEach(p => p.mentalHealth = Math.min(100, p.mentalHealth + 20));
+                                result = `The lawyer is amazing! They frighten the boss, who pays the $800. The lawyer files for a T-Visa for ${victim.name}, changing their legal status to 'Pending'. The 'Parents' feel empowered.`;
+                            } else { // 50% chance of failure
+                                let workers = state.family.filter(c => c.role === "Worker");
+                                workers.forEach(w => {
+                                    w.mentalHealth = Math.max(0, w.mentalHealth - 20);
+                                    w.notes = "Blacklisted";
+                                });
+                                result = `The claim fails. The boss is furious. All 'Workers' in the family are fired and blacklisted from the local job network. It is now much harder to find income.`;
+                            }
+                            return result;
+                        }
+                    },
+                    {
+                        text: "Forget the $800. Say nothing and find a new job.",
+                        effect: (state) => {
+                            let victim = state.family.find(c => c.role === "Worker");
+                            let parents = state.family.filter(c => c.role === "Parent");
+                            
+                            if (victim) victim.mentalHealth = Math.max(0, victim.mentalHealth - 20); // Defeated
+                            parents.forEach(p => p.mentalHealth = Math.max(0, p.mentalHealth - 10)); // Ashamed
+                            victim.notes = "Gave up on stolen wages";
+
+                            return `You decide the risk is too high. You let the $800 go. The boss wins. ${victim.name} feels defeated and loses health from the stress. The 'Parents' feel ashamed. You are safe, but you have lost money and dignity.`;
+                        }
+                    },
+                    {
+                        text: "Confront the boss directly as a family.",
+                        effect: (state) => {
+                            let result = "The whole family goes to the boss's office. He is surprised. ";
+                            let undocumented = state.family.find(c => c.legalStatus === "Undocumented");
+
+                            let roll = Math.random();
+                            if (roll < 0.3) { // 30% chance he pays
+                                state.money += 800;
+                                result += "He is intimidated by your numbers and pays the $800, telling you to never come back.";
+                            } else if (roll < 0.8) { // 50% chance he fires
+                                let workers = state.family.filter(c => c.role === "Worker");
+                                workers.forEach(w => w.notes = "Fired");
+                                result += "He laughs in your face and tells all 'Workers' they are fired. You get nothing.";
+                            } else { // 20% chance he calls ICE
+                                if (undocumented) {
+                                    undocumented.health = 10;
+                                    undocumented.healthStatus = "Critical";
+                                    undocumented.mentalHealth = 10;
+                                    undocumented.mentalHealthStatus = "Depressed";
+                                    undocumented.notes = "In deportation proceedings";
+                                    result += `He calls the police and claims you are trespassing. The police ask for papers. ${undocumented.name} is 'Undocumented' and is detained by ICE.`;
+                                } else {
+                                    result += "He calls the police, but everyone has 'Pending' status, so they just tell you to leave. A terrifyingly close call."
+                                }
+                            }
+                            return result;
+                        }
+                    },
+                    {
+                        text: "Ask a community leader/church to mediate ($50 'donation').",
+                        effect: (state) => {
+                            if (state.money < 50) return "You can't even afford the donation.";
+                            
+                            state.money -= 50;
+                            let result = "You ask a local priest to mediate, giving a $50 donation. ";
+
+                            if (Math.random() < 0.5) {
+                                state.money += 400;
+                                result += "The boss, respecting the priest, agrees to pay *half* the wages ($400) to 'make the problem go away.' You accept the compromise.";
+                            } else {
+                                result += "The priest tries, but the boss refuses. You are out $50 and still have no wages. The priest apologizes for his powerlessness.";
+                            }
+                            return result;
+                        }
+                    }
+                ]
+            }
+        ];
+
+        // --- DOM Elements ---
+        const screens = {
+            start: document.getElementById('start-screen'),
+            characterSelect: document.getElementById('character-select-screen'),
+            game: document.getElementById('game-screen'),
+            end: document.getElementById('end-screen')
+        };
+        const startButton = document.getElementById('start-button');
+        const familySelectButtons = document.querySelectorAll('.select-family-btn');
+        const moneyStat = document.getElementById('money-stat');
+        const familyStatusContainer = document.getElementById('family-status-container');
+        
+        const scenarioView = document.getElementById('scenario-view');
+        const scenarioTitle = document.getElementById('scenario-title');
+        const scenarioDescription = document.getElementById('scenario-description');
+        const desiresContainer = document.getElementById('desires-container');
+        const choicesContainer = document.getElementById('choices-container');
+        
+        const resultView = document.getElementById('result-view');
+        const resultTitle = document.getElementById('result-title');
+        const resultText = document.getElementById('result-text');
+        const nextScenarioBtn = document.getElementById('next-scenario-btn');
+        
+        const finalMoney = document.getElementById('final-money');
+        const finalFamilyStatus = document.getElementById('final-family-status');
+        const finalSummaryText = document.getElementById('final-summary-text');
+        const restartBtn = document.getElementById('restart-btn');
+
+        // --- Core Game Logic ---
+
+        // Utility: Show a single screen
+        function showScreen(screenName) {
+            Object.values(screens).forEach(screen => screen.classList.remove('active'));
+            screens[screenName].classList.add('active');
+            gameState.screen = screenName;
+        }
+
+        // Utility: Update character status string based on health
+        function updateCharacterStatuses(char) {
+            if (char.healthStatus === 'Deceased') return; // Don't revive
+            
+            if (char.notes && char.notes.includes("deportation")) {
+                char.healthStatus = "Critical"; // Override
+                char.mentalHealthStatus = "Depressed";
+                return;
+            }
+
+            // Update Physical Health Status
+            if (char.health <= 0) {
+                char.healthStatus = 'Deceased';
+                char.health = 0;
+            } else if (char.health < 30) {
+                char.healthStatus = 'Critical';
+            } else if (char.health < 60) {
+                char.healthStatus = 'Sick';
+            } else {
+                char.healthStatus = 'Healthy';
+            }
+
+            // Update Mental Health Status
+            if (char.mentalHealth < 30) {
+                char.mentalHealthStatus = 'Depressed';
+            } else if (char.mentalHealth < 60) {
+                char.mentalHealthStatus = 'Stressed';
+            } else {
+                char.mentalHealthStatus = 'Stable';
+            }
+        }
+
+        // Update the UI for money and family health
+        function updateStatsUI() {
+            // Update money
+            moneyStat.textContent = gameState.money;
+
+            // Update family status
+            familyStatusContainer.innerHTML = ''; // Clear old cards
+            gameState.family.forEach(char => {
+                updateCharacterStatuses(char); // Ensure status string is correct
+                
+                const card = document.createElement('div');
+                card.className = 'theme-card border theme-border rounded-lg p-3 text-sm shadow-sm';
+                
+                // Format legal status for class name
+                const legalStatusClass = `status-${char.legalStatus.toLowerCase().replace(' ', '-')}`;
+
+                card.innerHTML = `
+                    <h4 class="font-bold text-base">${char.name} <span class="text-xs">(${char.age})</span></h4>
+                    <p>Health: <span class="font-bold status-${char.healthStatus.toLowerCase()}">${char.healthStatus} (${char.health})</span></p>
+                    <p>Mental: <span class="font-bold status-${char.mentalHealthStatus.toLowerCase()}">${char.mentalHealthStatus} (${char.mentalHealth})</span></p>
+                    <p>Legal: <span class="font-bold ${legalStatusClass}">${char.legalStatus}</span></p>
+                    ${char.notes ? `<p class="text-xs italic text-gray-500 mt-1">${char.notes}</p>` : ''}
+                `;
+                familyStatusContainer.appendChild(card);
+            });
+        }
+
+        // Load a scenario by index
+        function loadScenario(index) {
+            // First, update the character cards
+            updateStatsUI();
+
+            const scenario = scenarios[index];
+            scenarioTitle.textContent = scenario.title;
+            scenarioDescription.textContent = scenario.description;
+
+            // Load Desires
+            desiresContainer.innerHTML = '';
+            const scenarioDesires = scenario.desires;
+            const relevantRoles = new Set(gameState.family.map(c => c.role));
+            
+            for (const [role, desire] of Object.entries(scenarioDesires)) {
+                if (relevantRoles.has(role)) {
+                    const desireEl = document.createElement('div');
+                    desireEl.innerHTML = `<strong class="theme-text">${role}s:</strong> "${desire}"`;
+                    desiresContainer.appendChild(desireEl);
+                }
+            }
+            
+            // Load Choices
+            choicesContainer.innerHTML = ''; // Clear old choices
+            scenario.choices.forEach((choice, choiceIndex) => {
+                const button = document.createElement('button');
+                button.className = 'theme-button text-left';
+                button.innerHTML = choice.text;
+                button.onclick = () => makeChoice(index, choice);
+                choicesContainer.appendChild(button);
+            });
+
+            // Show scenario, hide result
+            scenarioView.style.display = 'block';
+            resultView.style.display = 'none';
+        }
+
+        // Process a player's choice
+        function makeChoice(scenarioIndex, choice) {
+            // Call the effect function, which modifies gameState
+            const resultString = choice.effect(gameState);
+
+            // Update result text
+            resultText.innerHTML = resultString;
+            
+            // Update all UI elements
+            updateStatsUI();
+            
+            // Show result, hide scenario
+            scenarioView.style.display = 'none';
+            resultView.style.display = 'block';
+        }
+
+        // Move to the next scenario or end the game
+        function nextScenario() {
+            gameState.currentScenarioIndex++;
+            
+            if (gameState.currentScenarioIndex >= scenarios.length) {
+                showEndGame();
+            } else {
+                loadScenario(gameState.currentScenarioIndex);
+            }
+        }
+
+        // Display the final end game screen
+        function showEndGame() {
+            finalMoney.textContent = gameState.money;
+            
+            finalFamilyStatus.innerHTML = ''; // Clear
+            let deceasedCount = 0;
+            let criticalCount = 0;
+            let detainedCount = 0;
+            let depressedCount = 0;
+
+            gameState.family.forEach(char => {
+                updateCharacterStatuses(char); // Final update
+                if (char.healthStatus === 'Deceased') deceasedCount++;
+                if (char.notes && char.notes.includes("deportation")) {
+                    detainedCount++;
+                    char.healthStatus = "Detained"; // Final status
+                }
+                if (char.healthStatus === 'Critical') criticalCount++;
+                if (char.mentalHealthStatus === 'Depressed') depressedCount++;
+                
+                let finalStatusText = char.healthStatus;
+                if(char.healthStatus === 'Critical' && detainedCount > 0) {
+                    finalStatusText = "Detained";
+                }
+
+                const statusEntry = document.createElement('div');
+                statusEntry.className = 'p-2 border theme-border rounded';
+                statusEntry.innerHTML = `
+                    <span class.="font-bold">${char.name}</span>: 
+                    <span class="font-bold status-${finalStatusText.toLowerCase()}">${finalStatusText}</span> / 
+                    <span class="font-bold status-${char.mentalHealthStatus.toLowerCase()}">${char.mentalHealthStatus}</span>
+                `;
+                finalFamilyStatus.appendChild(statusEntry);
+            });
+
+            // Generate a dynamic summary
+            let summary = "";
+            if (deceasedCount > 0) {
+                summary = `Your family paid the ultimate price, losing ${deceasedCount} member(s).`;
+            } else if (detainedCount > 0) {
+                summary = `Your family is facing the terrible fear of separation, with ${detainedCount} member(s) detained in deportation proceedings.`;
+            } else if (criticalCount > 0) {
+                summary = `Your family is together, but ${criticalCount} member(s) are in critical condition. The fight for survival is far from over.`;
+            } else if (depressedCount > 0) {
+                summary = `Your family is physically safe, but the stress of assimilation has taken a heavy toll, leaving ${depressedCount} member(s) depressed.`;
+            } else if (gameState.money < 200) {
+                summary = "Your family is healthy and together, but you have almost no money left. The road ahead will be one of financial struggle.";
+            } else {
+                summary = "Through a combination of luck and difficult choices, your family has arrived intact, with some money to start over. You have a foothold.";
+            }
+            finalSummaryText.textContent = summary + " Reflect on the choices you made. What would you do differently? What sacrifices did you make?";
+
+            showScreen('end');
+        }
+
+        // Restart the game
+        function restartGame() {
+            // Reset game state
+            gameState = {
+                screen: 'start',
+                family: [],
+                money: 0,
+                currentScenarioIndex: 0
+            };
+            showScreen('start');
+        }
+
+// --- Event Listeners ---
+
+        // Start Button
+        startButton.addEventListener('click', () => {
+            showScreen('characterSelect');
+        });
+
+        // Family Selection Buttons
+        familySelectButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                const groupIndex = parseInt(e.target.dataset.group);
+                const selectedGroup = familyGroups[groupIndex];
+                
+                // Deep copy the family members to avoid modifying the original data
+                gameState.family = JSON.parse(JSON.stringify(selectedGroup.members));
+                gameState.money = selectedGroup.startMoney;
+                gameState.currentScenarioIndex = 0;
+                
+                // Load the first scenario, which will also call updateStatsUI
+                loadScenario(0);
+                showScreen('game');
+            });
+        });
+
+        // Next Scenario Button
+        nextScenarioBtn.addEventListener('click', nextScenario);
+
+        // Restart Button
+        restartBtn.addEventListener('click', restartGame);
+
+        // --- Initial Load ---
+        showScreen('start'); // Show the start screen by default
+    
+    </script>
+</body>
+</html>
+
+
