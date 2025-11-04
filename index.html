@@ -53,6 +53,8 @@
         .status-sick { color: #fd7e14; } /* Orange */
         .status-critical { color: #dc3545; } /* Red */
         .status-deceased { color: #6c757d; text-decoration: line-through; } /* Gray */
+        .status-detained { color: #6c757d; font-style: italic;} /* Gray */
+
 
         /* Mental health status colors */
         .status-stable { color: #28a745; } /* Green */
@@ -99,15 +101,19 @@
                 
                 <!-- Family Card 1 -->
                 <div class="theme-card theme-border border-2 rounded-lg p-6 shadow-lg flex flex-col">
-                    <h3 class="text-2xl font-bold mb-4">Group 1: The Elders</h3>
+                    <h3 class="text-2xl font-bold mb-4">Group 1: The 'Familia Unida'</h3>
                     <p class="mb-4 flex-grow">A large, multi-generational family led by the grandmother. Her health is fragile, and the family is large, with multiple teens.</p>
                     <ul class="list-disc list-inside mb-6 text-sm flex-grow">
-                        <li>Sick Grandma (70s)</li>
-                        <li>Son #1 (40s, single)</li>
-                        <li>Son #2 (30s) & Wife</li>
-                        <li>- Teen Son & Teen Girl</li>
-                        <li>Daughter #1 (30s) & Husband</li>
-                        <li>- Teen Girl & Adult Son (20s)</li>
+                        <li>Elena (72, Sick, Undocumented)</li>
+                        <li>Miguel (45, Worker, Undocumented)</li>
+                        <li>Roberto (38, Parent, Undocumented)</li>
+                        <li>Sofia (36, Parent, Undocumented)</li>
+                        <li>Isabel (15, Teen, Pending Asylum)</li>
+                        <li>Marco (17, Teen, Pending Asylum)</li>
+                        <li>Luisa (35, Parent, Undocumented)</li>
+                        <li>Javier (37, Worker, Undocumented)</li>
+                        <li>Carmen (16, Teen, Pending Asylum)</li>
+                        <li>Carlos (20, Worker, Undocumented)</li>
                     </ul>
                     <button class="theme-button select-family-btn mt-auto" data-group="0">Choose this Family</button>
                 </div>
@@ -115,14 +121,16 @@
                 <!-- Family Card 2 -->
                 <div class="theme-card theme-border border-2 rounded-lg p-6 shadow-lg flex flex-col">
                     <h3 class="text-2xl font-bold mb-4">Group 2: The Professionals</h3>
-                    <p class="mb-4 flex-grow">A couple who were professionals in their home country, now with their teenage children and an uncle who is a skilled laborer.</p>
+                    <p class="mb-4 flex-grow">A couple who were professionals in their home country, now with their teenage children and extended family.</p>
                      <ul class="list-disc list-inside mb-6 text-sm flex-grow">
-                        <li>Husband (42, former accountant)</li>
-                        <li>Wife (40, former teacher)</li>
-                        <li>Teen Son (16) & Teen Daughter (14)</li>
-                        <li>Uncle (45, skilled, sick)</li>
-                        <li>Aunt (43)</li>
-                        <li>Cousin (19) & Cousin (17)</li>
+                        <li>David (42, Parent, Pending Asylum)</li>
+                        <li>Maria (40, Parent, Pending Asylum)</li>
+                        <li>Leo (16, Teen, Pending Asylum)</li>
+                        <li>Julia (14, Teen, Pending Asylum)</li>
+                        <li>Juan (45, Worker, Undocumented, Sick)</li>
+                        <li>Rosa (43, Worker, Undocumented)</li>
+                        <li>Mateo (19, Worker, Undocumented)</li>
+                        <li>Diego (17, Teen, Undocumented)</li>
                     </ul>
                     <button class="theme-button select-family-btn mt-auto" data-group="1">Choose this Family</button>
                 </div>
@@ -132,11 +140,11 @@
                     <h3 class="text-2xl font-bold mb-4">Group 3: The Small Unit</h3>
                     <p class="mb-4 flex-grow">A single mother fleeing a dangerous situation with her two children and her younger brother. She has very little money but is desperate to find safety.</p>
                     <ul class="list-disc list-inside mb-6 text-sm flex-grow">
-                        <li>Mother (32)</li>
-                        <li>Teenage Son (15)</li>
-                        <li>Daughter (13)</li>
-                        <li>Younger Brother (22)</li>
-                        <li>Family Friend (24)</li>
+                        <li>Ana (32, Parent, Pending Asylum)</li>
+                        <li>Luis (15, Teen, Pending Asylum)</li>
+                        <li>Sofia (13, Teen, Pending Asylum)</li>
+                        <li>Pedro (22, Worker, Undocumented)</li>
+                        <li>Hector (24, Worker, Undocumented)</li>
                     </ul>
                     <button class="theme-button select-family-btn mt-auto" data-group="2">Choose this Family</button>
                 </div>
@@ -225,7 +233,8 @@
             screen: 'start',
             family: [],
             money: 0,
-            currentScenarioIndex: 0
+            currentScenarioIndex: 0,
+            activeScenarios: [] // NEW: Will hold the scenarios for the chosen group
         };
 
         // --- GAME DATA ---
@@ -246,297 +255,772 @@
 
         const familyGroups = [
             {
-                name: "Group 1: The Elders",
+                name: "Group 1: The 'Familia Unida'",
                 startMoney: 1800,
                 members: [
-                    createChar("Grandma Elena", 72, 40, "Sick", 80, "Stable", "Undocumented", "Elder", "Frail, needs medicine"),
-                    createChar("Son Miguel", 45, 100, "Healthy", 100, "Stable", "Undocumented", "Worker", "Single, strong"),
-                    createChar("Son Roberto", 38, 100, "Healthy", 100, "Stable", "Undocumented", "Parent", "Works cash jobs"),
-                    createChar("Wife Sofia", 36, 100, "Healthy", 100, "Stable", "Undocumented", "Parent", "Wife of Roberto"),
-                    createChar("Teen Isabel", 15, 100, "Healthy", 70, "Stressed", "Pending Asylum", "Teen", "Daughter of R&S"),
-                    createChar("Teen Marco", 17, 100, "Healthy", 60, "Stressed", "Pending Asylum", "Teen", "Son of R&S, restless"),
-                    createChar("Daughter Luisa", 35, 100, "Healthy", 100, "Stable", "Undocumented", "Parent"),
-                    createChar("Husband Javier", 37, 100, "Healthy", 100, "Stable", "Undocumented", "Worker", "Husband of Luisa"),
-                    createChar("Teen Carmen", 16, 100, "Healthy", 70, "Stressed", "Pending Asylum", "Teen", "Daughter of L&J"),
-                    createChar("Adult Carlos", 20, 100, "Healthy", 90, "Stable", "Undocumented", "Worker", "Son of L&J")
+                    createChar("Elena", 72, 40, "Sick", 80, "Stable", "Undocumented", "Elder", "The matriarch. Proud, traditional. Hides her pain."),
+                    createChar("Miguel", 45, 100, "Healthy", 100, "Stable", "Undocumented", "Worker", "Eldest son. Feels responsible for everyone. Works construction."),
+                    createChar("Roberto", 38, 100, "Healthy", 100, "Stable", "Undocumented", "Parent", "Hard-working, optimistic. Worries about money."),
+                    createChar("Sofia", 36, 100, "Healthy", 100, "Stable", "Undocumented", "Parent", "Roberto's wife. The family's emotional center."),
+                    createChar("Isabel", 15, 100, "Healthy", 60, "Stressed", "Pending Asylum", "Teen", "Daughter of R&S. Bright, but feels caught between two worlds."),
+                    createChar("Marco", 17, 100, "Healthy", 50, "Stressed", "Pending Asylum", "Teen", "Son of R&S. Restless, wants to be 'American'."),
+                    createChar("Luisa", 35, 100, "Healthy", 100, "Stable", "Undocumented", "Parent", "Elena's daughter. More anxious than Sofia."),
+                    createChar("Javier", 37, 100, "Healthy", 100, "Stable", "Undocumented", "Worker", "Luisa's husband. Works with Miguel. Quiet and steady."),
+                    createChar("Carmen", 16, 100, "Healthy", 70, "Stressed", "Pending Asylum", "Teen", "Daughter of L&J. Studious, helps with everything."),
+                    createChar("Carlos", 20, 100, "Healthy", 90, "Stable", "Undocumented", "Worker", "Son of L&J. Eager to prove himself.")
                 ]
             },
             {
                 name: "Group 2: The Professionals",
                 startMoney: 2200,
                 members: [
-                    createChar("Husband David", 42, 100, "Healthy", 90, "Stable", "Pending Asylum", "Parent", "Former accountant"),
-                    createChar("Wife Maria", 40, 100, "Healthy", 90, "Stable", "Pending Asylum", "Parent", "Former teacher"),
-                    createChar("Teen Son Leo", 16, 100, "Healthy", 60, "Stressed", "Pending Asylum", "Teen", "Good student"),
-                    createChar("Teen Daughter Julia", 14, 100, "Healthy", 50, "Stressed", "Pending Asylum", "Teen", "Struggling with English"),
-                    createChar("Uncle Juan", 45, 60, "Sick", 80, "Stable", "Undocumented", "Worker", "Skilled carpenter, cough"),
-                    createChar("Aunt Rosa", 43, 100, "Healthy", 90, "Stable", "Undocumented", "Worker", "Wife of Juan"),
-                    createChar("Cousin Mateo", 19, 100, "Healthy", 80, "Stable", "Undocumented", "Worker"),
-                    createChar("Cousin Diego", 17, 100, "Healthy", 70, "Stressed", "Undocumented", "Teen")
+                    createChar("David", 42, 100, "Healthy", 80, "Stressed", "Pending Asylum", "Parent", "Former accountant. Frustrated by his current labor job."),
+                    createChar("Maria", 40, 100, "Healthy", 80, "Stressed", "Pending Asylum", "Parent", "Former teacher. Worries constantly about her children."),
+                    createChar("Leo", 16, 100, "Healthy", 60, "Stressed", "Pending Asylum", "Teen", "Good student, but feels intense pressure to succeed."),
+                    createChar("Julia", 14, 100, "Healthy", 50, "Stressed", "Pending Asylum", "Teen", "Struggles with English and is withdrawing socially."),
+                    createChar("Juan", 45, 60, "Sick", 70, "Stable", "Undocumented", "Worker", "Skilled carpenter. His cough is getting worse."),
+                    createChar("Rosa", 43, 100, "Healthy", 90, "Stable", "Undocumented", "Worker", "Juan's wife. Practical, a skilled seamstress."),
+                    createChar("Mateo", 19, 100, "Healthy", 80, "Stable", "Undocumented", "Worker", "David's nephew. Works hard, sends money home."),
+                    createChar("Diego", 17, 100, "Healthy", 70, "Stressed", "Undocumented", "Teen", "Rosa's nephew. Got into a fight at school.")
                 ]
             },
             {
                 name: "Group 3: The Small Unit",
                 startMoney: 900,
                 members: [
-                    createChar("Mother Ana", 32, 90, "Healthy", 70, "Stressed", "Pending Asylum", "Parent", "Very stressed"),
-                    createChar("Teen Son Luis", 15, 100, "Healthy", 60, "Stressed", "Pending Asylum", "Teen", "Wants to work"),
-                    createChar("Daughter Sofia", 13, 100, "Healthy", 50, "Stressed", "Pending Asylum", "Teen", "Scared, quiet"),
-                    createChar("Brother Pedro", 22, 100, "Healthy", 90, "Stable", "Undocumented", "Worker", "Protective"),
-                    createChar("Friend Hector", 24, 100, "Healthy", 90, "Stable", "Undocumented", "Worker", "Owes Ana a debt")
+                    createChar("Ana", 32, 90, "Healthy", 60, "Stressed", "Pending Asylum", "Parent", "Single mother. Fiercely protective and exhausted."),
+                    createChar("Luis", 15, 100, "Healthy", 50, "Stressed", "Pending Asylum", "Teen", "Wants to drop out to help his mom with money."),
+                    createChar("Sofia", 13, 100, "Healthy", 40, "Depressed", "Pending Asylum", "Teen", "Quiet, traumatized by events back home."),
+                    createChar("Pedro", 22, 100, "Healthy", 90, "Stable", "Undocumented", "Worker", "Ana's brother. Impulsive, but loyal."),
+                    createChar("Hector", 24, 100, "Healthy", 90, "Stable", "Undocumented", "Worker", "Family friend. Reliable, has a car.")
                 ]
             }
         ];
 
-        // --- NEW, MORE INTRICATE SCENARIOS ---
-
-        const scenarios = [
+        // --- NEW: SCENARIOS ARE NOW GROUPED ---
+        // --- FIX: Rebuilt this entire constant to fix syntax errors ---
+        const allScenarios = [
             {
-                title: "Scenario 1: The Workplace Injury",
-                description: "One of your family's main 'Workers' falls from a ladder at a cash-only construction site and is badly injured. Their leg is clearly broken. The employer, who is also an immigrant, offers you $1000 cash to *not* go to the hospital and to say it happened at home. If you go to the hospital and tell the truth, he will fire the worker, deny they ever worked there, and blacklist your family.",
-                desires: {
-                    'Elder': "A broken bone must be set properly, or he will be crippled for life. This is not a cold. But making an enemy of a man who gives us work is dangerous.",
-                    'Parent': "This is illegal! He is exploiting us! We must go to the hospital and file a report. We have rights! My child's health is not for sale.",
-                    'Worker': "I am in so much pain, but if I lose this job... if we all get blacklisted... how do we eat? $1000 is a lot of money. Maybe it's enough for a 'huesero' (bone-setter).",
-                    'Teen': "This is crazy! You have to go to the hospital! That guy is a criminal! We should sue him!"
-                },
-                choices: [
+                groupIndex: 0, // For Group 1
+                scenarios: [
                     {
-                        text: "Go to the ER, tell the truth, and file a report ($0).",
-                        effect: (state) => {
-                            let injured = state.family.find(c => c.role === "Worker");
-                            let workers = state.family.filter(c => c.role ==="Worker");
-                            
-                            injured.health = Math.min(100, injured.health + 40);
-                            injured.notes = "Recovering, but fired";
-                            
-                            workers.forEach(w => {
-                                w.mentalHealth = Math.max(0, w.mentalHealth - 20); // Stress
-                                w.notes = "Blacklisted from job site";
-                            });
+                        title: "Scenario 1: The Workplace Injury",
+                        description: "Miguel falls from a ladder at a cash-only construction site and is badly injured. His leg is clearly broken. The employer offers $1000 cash to *not* go to the hospital. This is a classic 'lack of accessibility' problem: no insurance, no worker's comp. Telling the truth will get Miguel and his 'Worker' family members (Javier, Carlos) blacklisted. Not treating it could cripple him.",
+                        desires: {
+                            'Elder (Elena)': "A broken bone must be set properly, or he will be crippled. This is not a cold. But making an enemy of a man who gives us work is dangerous.",
+                            'Parent (Roberto)': "This is illegal! He is exploiting us! We must go to the hospital and file a report. We have rights! Our family's health is not for sale.",
+                            'Worker (Miguel)': "I am in so much pain, but if I lose this job... if we all get blacklisted... how do we eat? $1000 is a lot of money. Maybe it's enough for a 'huesero' (bone-setter).",
+                            'Teen (Isabel)': "This is crazy! You have to go to the hospital! That guy is a criminal! We should sue him!"
+                        },
+                        choices: [
+                            {
+                                text: "Go to the ER, tell the truth, and file a report ($0).",
+                                effect: (state) => {
+                                    let injured = state.family.find(c => c.name === "Miguel");
+                                    let workers = state.family.filter(c => c.role === "Worker");
+                                    let parents = state.family.filter(c => c.role === "Parent");
+                                    
+                                    injured.health = Math.min(100, injured.health + 40);
+                                    injured.notes = "Recovering, but fired";
+                                    
+                                    workers.forEach(w => {
+                                        if (w.name !== injured.name) {
+                                            w.mentalHealth = Math.max(0, w.mentalHealth - 20); // Stress
+                                            w.notes = "Blacklisted from job site";
+                                        }
+                                    });
+                                    parents.forEach(p => p.mentalHealth = Math.max(0, p.mentalHealth - 10)); // Stress
 
-                            return `You go to the ER. The hospital treats ${injured.name} and the leg will heal properly. You file a worker's compensation claim. The employer is furious. ${injured.name} is fired, and all other family 'Workers' are told not to come back. You have no income, but you stood up for your rights.`;
-                        }
-                    },
-                    {
-                        text: "Go to the ER, but lie and say it happened at home ($1500 bill).",
-                        effect: (state) => {
-                            let injured = state.family.find(c => c.role === "Worker");
-                            let parents = state.family.filter(c => c.role === "Parent");
-                            
-                            if (state.money < 1500) {
-                                state.money -= 1500; // Go into debt
-                            } else {
-                                state.money -= 1500;
+                                    return `You go to the ER. The hospital treats ${injured.name} and the leg will heal properly. You file a worker's compensation claim. The employer is furious. ${injured.name} is fired, and all other family 'Workers' are told not to come back. You have no income, but you stood up for your rights.`;
+                                }
+                            },
+                            {
+                                text: "Go to the ER, but lie and say it happened at home ($1500 bill).",
+                                effect: (state) => {
+                                    let injured = state.family.find(c => c.name === "Miguel");
+                                    let parents = state.family.filter(c => c.role === "Parent");
+                                    
+                                    state.money -= 1500;
+                                    
+                                    injured.health = Math.min(100, injured.health + 40);
+                                    injured.notes = "Recovering, job is safe";
+                                    parents.forEach(p => p.mentalHealth = Math.max(0, p.mentalHealth - 15)); // Guilt/stress
+
+                                    return `You rush ${injured.name} to the ER and lie. The doctors are suspicious but treat the leg. You receive a bill for $1500, putting you in serious debt. The employer is relieved and the job is safe... for now. The 'Parents' feel the shame of the lie.`;
+                                }
+                            },
+                            {
+                                text: "Take the $1000 cash, go to a 'huesero' / bone-setter ($100).",
+                                effect: (state) => {
+                                    state.money += 900;
+                                    let injured = state.family.find(c => c.name === "Miguel");
+                                    let result = `You take the $1000 and pay a local bone-setter $100. ${injured.name} is in agony as the bone is set without anesthesia. `;
+                                    injured.mentalHealth = Math.max(0, injured.mentalHealth - 20); // Trauma of procedure
+
+                                    if (Math.random() < 0.5) { // 50% chance of bad outcome
+                                        injured.health = Math.max(20, injured.health - 30);
+                                        injured.notes = "Permanent limp, botched healing";
+                                        result += `The healing is bad. ${injured.name} now has a permanent, painful limp and his health is 'Critical'.`;
+                                    } else {
+                                        injured.health = Math.min(80, injured.health + 10);
+                                        injured.notes = "Healed with a limp, but can work";
+                                        result += `It seems to work. The leg heals, but with a slight limp. ${injured.name} can still work, and you have $900 in your pocket.`;
+                                    }
+                                    return result;
+                                }
+                            },
+                            {
+                                text: "Take the $1000 cash, do nothing but rest ($+1000).",
+                                effect: (state) => {
+                                    state.money += 1000;
+                                    let injured = state.family.find(c => c.name === "Miguel");
+                                    injured.health = Math.max(10, injured.health - 50);
+                                    injured.notes = "Crippled, badly healed leg";
+                                    state.family.forEach(c => {
+                                        if (c.healthStatus !== 'Deceased') c.mentalHealth = Math.max(0, c.mentalHealth - 10);
+                                    }); // Family-wide stress
+                                    injured.mentalHealth = Math.max(0, injured.mentalHealth - 40); // Despair
+
+                                    return `You take the $1000, desperate for the money. You do nothing for the leg except rest it. ${injured.name} is in constant pain and the leg heals badly, leaving them crippled. They can no longer work. The entire family is stressed and ${injured.name} is depressed by this outcome.`;
+                                }
                             }
-                            
-                            injured.health = Math.min(100, injured.health + 40);
-                            injured.notes = "Recovering, job is safe";
-                            parents.forEach(p => p.mentalHealth = Math.max(0, p.mentalHealth - 15)); // Guilt/stress
-
-                            return `You rush ${injured.name} to the ER and lie. The doctors are suspicious but treat the leg. You receive a bill for $1500, putting you in serious debt. The employer is relieved and the job is safe... for now. The 'Parents' feel the shame of the lie.`;
-                        }
+                        ]
                     },
                     {
-                        text: "Take the $1000 cash, go to a 'huesero' / bone-setter ($100).",
-                        effect: (state) => {
-                            state.money += 900;
-                            let injured = state.family.find(c => c.role === "Worker");
-                            let result = `You take the $1000 and pay a local bone-setter $100. ${injured.name} is in agony as the bone is set without anesthesia. `;
-                            injured.mentalHealth = Math.max(0, injured.mentalHealth - 20); // Trauma of procedure
+                        title: "Scenario 2: The Sleepover (Acculturative Stress)",
+                        description: "Isabel (15) is invited to a sleepover. This creates a massive fight, a perfect example of 'acculturative stress'. To Elena and the 'Parents', this is a shocking betrayal of traditional values. To Isabel, it's a normal 'American' thing. This conflict directly attacks the family's 'familismo' (a key protective factor), causing mental health stress for *both* the parents (fear of loss) and the teen (feeling alienated).",
+                        desires: {
+                            'Elder (Elena)': "Absolutely not. This is a betrayal of our values and her dignity. We do not 'sleep over.' She stays here. This is not negotiable.",
+                            'Parent (Sofia)': "I don't know these people. What if there are boys? What if something happens? But I see how sad she is... I feel I am losing her.",
+                            'Worker (Carlos)': "Let the kid go. Who cares? If she is happy, she will do well in school. This is how they live here. It's not a big deal.",
+                            'Teen (Isabel)': "It's just a sleepover! Why are you so old-fashioned? I finally have friends, and you're trying to ruin it! I hate being different! You just don't understand."
+                        },
+                        choices: [
+                            {
+                                text: "Forbid Isabel from going. Family and tradition come first.",
+                                effect: (state) => {
+                                    let teen = state.family.find(c => c.name === "Isabel");
+                                    let parents = state.family.filter(c => c.role === "Parent" || c.role === "Elder");
+                                    
+                                    teen.mentalHealth = Math.max(0, teen.mentalHealth - 30); // Despair/rebellion
+                                    teen.notes = "Resentful and withdrawn";
+                                    parents.forEach(p => p.mentalHealth = Math.min(100, p.mentalHealth + 10)); // Feel in control
 
-                            if (Math.random() < 0.5) { // 50% chance of bad outcome
-                                injured.health = Math.max(20, injured.health - 30);
-                                injured.healthStatus = "Critical";
-                                injured.notes = "Permanent limp, botched healing";
-                                result += "The healing is bad. ${injured.name} now has a permanent, painful limp and their health is critical.";
-                            } else {
-                                injured.health = Math.min(80, injured.health + 10);
-                                injured.notes = "Healed with a limp, but can work";
-                                result += `It seems to work. The leg heals, but with a slight limp. ${injured.name} can still work, and you have $900 in your pocket.`;
+                                    return `You forbid Isabel from going. She explodes in anger and locks herself in her room, feeling like a prisoner. The 'Parents' and 'Elders' feel they have maintained order, but a deep rift has formed in the family.`;
+                                }
+                            },
+                            {
+                                text: "Let Isabel go. Assimilation is important.",
+                                effect: (state) => {
+                                    let teen = state.family.find(c => c.name === "Isabel");
+                                    let parents = state.family.filter(c => c.role === "Parent" || c.role === "Elder");
+
+                                    teen.mentalHealth = Math.min(100, teen.mentalHealth + 20); // Happy, integrated
+                                    teen.notes = "Assimilating well";
+                                    parents.forEach(p => p.mentalHealth = Math.max(0, p.mentalHealth - 20)); // Stress, fear of loss
+
+                                    return `You let Isabel go. She is overjoyed and feels trusted. The 'Parents' and 'Elders' spend the night sick with worry, feeling they have lost control and that their child is becoming a stranger.`;
+                                }
+                            },
+                            {
+                                text: "Compromise: Let her go, but with an adult 'Worker' (Carlos) as a chaperone.",
+                                effect: (state) => {
+                                    let teen = state.family.find(c => c.name === "Isabel");
+                                    let worker = state.family.find(c => c.name === "Carlos");
+                                    
+                                    teen.mentalHealth = Math.max(0, teen.mentalHealth - 10); // Embarrassed
+                                    teen.notes = "Embarrassed but went";
+                                    if (worker) {
+                                        worker.mentalHealth = Math.max(0, worker.mentalHealth - 10); // Annoyed, lost free time
+                                    }
+
+                                    return `You force a compromise. Isabel is mortified but agrees to go with Carlos as a chaperone. She doesn't have fun, and Carlos is annoyed to waste a Friday night. The 'Parents' feel slightly better, but nobody is happy.`;
+                                }
+                            },
+                            {
+                                text: "Distract: Declare a 'family night' and make a big traditional meal ($100).",
+                                effect: (state) => {
+                                    state.money -= 100;
+                                    let teen = state.family.find(c => c.name === "Isabel");
+                                    let parents = state.family.filter(c => c.role === "Parent" || c.role === "Elder");
+
+                                    teen.mentalHealth = Math.max(0, teen.mentalHealth - 20); // Feels punished
+                                    teen.notes = "Resentful";
+                                    parents.forEach(p => p.mentalHealth = Math.min(100, p.mentalHealth + 10));
+
+                                    return `You spend $100 on a big 'family values' dinner. The 'Elders' and 'Parents' feel good, but Isabel feels punished and misunderstood. The core issue is unresolved, and the teen's resentment grows.`;
+                                }
                             }
-                            return result;
-                        }
+                        ]
                     },
                     {
-                        text: "Take the $1000 cash, do nothing but rest ($+1000).",
-                        effect: (state) => {
-                            state.money += 1000;
-                            let injured = state.family.find(c => c.role === "Worker");
-                            injured.health = Math.max(10, injured.health - 50);
-                            injured.healthStatus = "Critical";
-                            injured.notes = "Crippled, badly healed leg";
-                            state.family.forEach(c => c.mentalHealth = Math.max(0, c.mentalHealth - 10)); // Family-wide stress
+                        title: "Scenario 3: The 'Chilling Effect' (Health Access)",
+                        description: "Two health issues at once. Elena (Elder, Undocumented) faints. She's 'Sick'. Marco (Teen, Pending Asylum) has a severe, painful toothache. You only have money for ONE clinic visit ($500) or ONE ER visit ($1500+). This scenario highlights two paradoxes: 1) The 'Chilling Effect': Taking Elena to an ER is a deportation risk. 2) The Generational Paradox: Elena (1st gen) will hide her pain, while Marco (1.5 gen) has an 'acculturated' expectation of immediate care.",
+                        desires: {
+                            'Elder (Elena)': "Do not worry about me. I am old. I will be fine. The boy is in pain, take him. Do *not* go to an official hospital. No 'papeles'.",
+                            'Parent (Luisa)': "My mother's (Elena) life is in danger! Fainting is serious. But my nephew (Marco) is in agony from his tooth. And any hospital visit could get Elena deported. This is an impossible choice.",
+                            'Worker (Miguel)': "We must protect Elena. A toothache is not death. We can't risk ICE. Let's find a 'curandero' or just get antibiotics from the 'botanica'.",
+                            'Teen (Marco)': "My tooth is killing me! I can't even think! This is America, you're supposed to go to the doctor! Elena just fainted, she's awake now. I'm the one who's really suffering!"
+                        },
+                        choices: [
+                            {
+                                text: "Take Elena to the ER ($1500+ bill). Risk deportation for her, ignore the tooth.",
+                                effect: (state) => {
+                                    state.money -= 1500;
+                                    let elder = state.family.find(c => c.name === "Elena");
+                                    let teen = state.family.find(c => c.name === "Marco");
 
-                            return `You take the $1000, desperate for the money. You do nothing for the leg except rest it. ${injured.name} is in constant pain and the leg heals badly, leaving them crippled. They can no longer work. The entire family is stressed and depressed by this outcome.`;
-                        }
+                                    let result = `You rush Elena to the ER. They treat her for a severe heart condition, saving her life. Her health is now 'Critical' but stable.`;
+                                    elder.health = 30; // Critical but alive
+                                    elder.notes = "Heart condition treated, but in debt.";
+                                    teen.mentalHealth = Math.max(0, teen.mentalHealth - 15);
+                                    teen.notes = "Angry his pain was ignored.";
+                                    
+                                    if (Math.random() < 0.25) { // 25% chance of ICE
+                                        elder.notes = "In deportation proceedings";
+                                        state.family.forEach(c => {
+                                            if (c.healthStatus !== 'Deceased') c.mentalHealth = Math.max(0, c.mentalHealth - 40);
+                                        });
+                                        result += ` As she is being discharged, an ICE agent is alerted by her status. She is detained. The family is shattered and depressed.`;
+                                    } else {
+                                        result += ` You are lucky, no one asked for papers and you are sent a massive bill. The family is stressed by the debt, but Elena is alive.`;
+                                        state.family.forEach(c => {
+                                            if (c.healthStatus !== 'Deceased') c.mentalHealth = Math.max(0, c.mentalHealth - 10);
+                                        });
+                                    }
+                                    return result;
+                                }
+                            },
+                            {
+                                text: "Take Marco to an emergency dentist ($500). Treat Elena at home with herbs.",
+                                effect: (state) => {
+                                    state.money -= 500;
+                                    let elder = state.family.find(c => c.name === "Elena");
+                                    let teen = state.family.find(c => c.name === "Marco");
+                                    
+                                    teen.health = Math.min(100, teen.health + 10);
+                                    teen.mentalHealth = Math.min(100, teen.mentalHealth + 20);
+                                    teen.notes = "Relieved";
+                                    
+                                    let result = `You pay $500 for the teen's tooth. They are relieved. You take Elena home. `;
+                                    if (Math.random() < 0.6) { // 60% chance of bad outcome for elder
+                                        elder.health = 0;
+                                        elder.notes = "Died from heart condition";
+                                        state.family.forEach(c => {
+                                            if (c.healthStatus !== 'Deceased') c.mentalHealth = Math.max(0, c.mentalHealth - 50);
+                                        });
+                                        result += `That night, Elena has a massive heart attack and does not survive. The family is destroyed by guilt and grief.`;
+                                    } else {
+                                        elder.health = 20;
+                                        elder.notes = "Barely survived, very weak.";
+                                        state.family.forEach(c => {
+                                            if (c.healthStatus !== 'Deceased') c.mentalHealth = Math.max(0, c.mentalHealth - 15);
+                                        });
+                                        result += `Elena is weak, but she survives the night. She is now in critical condition, but alive. The family feels both guilty and relieved.`;
+                                    }
+                                    return result;
+                                }
+                            },
+                            {
+                                text: "Do nothing. Wait and pray. ($0)",
+                                effect: (state) => {
+                                    let elder = state.family.find(c => c.name === "Elena");
+                                    let teen = state.family.find(c => c.name === "Marco");
+
+                                    teen.health = Math.max(40, teen.health - 20); // Infection
+                                    teen.notes = "Tooth abscess, in agony, depressed.";
+                                    teen.mentalHealth = Math.max(0, teen.mentalHealth - 30);
+                                    
+                                    let result = `Paralyzed by fear and cost, you do nothing. Marco's tooth gets infected, leading to a fever. He is now 'Sick' and 'Depressed'. `;
+                                    
+                                    if (Math.random() < 0.4) { // 40% chance of bad outcome for elder
+                                        elder.health = 0;
+                                        elder.notes = "Died from heart condition";
+                                        state.family.forEach(c => {
+                                            if (c.healthStatus !== 'Deceased') c.mentalHealth = Math.max(0, c.mentalHealth - 50);
+                                        });
+                                        result += `That night, Elena has a massive heart attack and does not survive. The family is shattered.`;
+                                    } else {
+                                        elder.health = 20;
+                                        elder.notes = "Barely survived, very weak.";
+                                        state.family.forEach(c => {
+                                            if (c.healthStatus !== 'Deceased') c.mentalHealth = Math.max(0, c.mentalHealth - 25);
+                                        });
+                                        result += `Elena is weak, but she survives the night. The whole family is sick, stressed, and has lost all hope.`;
+                                    }
+                                    return result;
+                                }
+                            },
+                            {
+                                text: "Buy black market antibiotics ($100). Give them to both.",
+                                effect: (state) => {
+                                    state.money -= 100;
+                                    let elder = state.family.find(c => c.name === "Elena");
+                                    let teen = state.family.find(c => c.name === "Marco");
+                                    
+                                    let result = `You buy strong antibiotics from the 'botanica'. `;
+                                    
+                                    // Teen outcome
+                                    if (Math.random() < 0.5) {
+                                        teen.health = Math.min(100, teen.health + 10);
+                                        teen.notes = "Tooth infection cleared";
+                                        result += `For Marco, it works! The infection clears. `;
+                                    } else {
+                                        teen.health = Math.max(40, teen.health - 20);
+                                        teen.notes = "Tooth abscess, meds didn't work";
+                                        result += `The antibiotics do nothing for Marco's tooth. It's not a bacterial infection. He is now 'Sick'. `;
+                                    }
+                                    
+                                    // Elder outcome
+                                    elder.health = Math.max(10, elder.health - 30);
+                                    elder.notes = "Heart condition, antibiotics useless";
+                                    state.family.forEach(c => {
+                                        if (c.healthStatus !== 'Deceased') c.mentalHealth = Math.max(0, c.mentalHealth - 10);
+                                    });
+                                    result += `For Elena, the antibiotics do nothing. It's a heart problem. She is now 'Critical'. You've wasted $100 and precious time.`;
+                                    return result;
+                                }
+                            }
+                        ]
                     }
                 ]
             },
             {
-                title: "Scenario 2: The Cultural Divide",
-                description: "Your 'Teen' is adapting well—perhaps *too* well. They speak English almost exclusively, are embarrassed by your customs, and want to go to a school dance with an American classmate. This is causing a huge fight. The 'Elders' and 'Parents' are deeply uncomfortable, feeling they are 'losing' their child to American culture and that it's disrespectful.",
-                desires: {
-                    'Elder': "This is a matter of respect. A child does not question their family or forget who they are. This is the first step to forgetting us entirely. They must be forbidden.",
-                    'Parent': "We came here for a better *life*, not to lose our child. This new culture is too fast, too loud. How do we protect them without pushing them away?",
-                    'Worker': "Let the kid go. Who cares? If they are happy, they will do well in school. If they are 'American,' they can help us all navigate this place. It's not a big deal.",
-                    'Teen': "It's just a dance! Why are you so old-fashioned? I finally have friends, and you're trying to ruin it! I hate being different! You just don't understand."
-                },
-                choices: [
+                groupIndex: 1, // For Group 2
+                scenarios: [
                     {
-                        text: "Forbid the teen from going. Family values come first.",
-                        effect: (state) => {
-                            let teen = state.family.find(c => c.role === "Teen");
-                            let parents = state.family.filter(c => c.role === "Parent" || c.role === "Elder");
-                            
-                            teen.mentalHealth = Math.max(0, teen.mentalHealth - 30); // Despair/rebellion
-                            teen.notes = "Resentful and withdrawn";
-                            parents.forEach(p => p.mentalHealth = Math.min(100, p.mentalHealth + 10)); // Feel in control
+                        title: "Scenario 1: The 'Promotion' (Loss of Status & Mental Health)",
+                        description: "David (former accountant) is offered a 'promotion' to 'site supervisor'. It pays $500 more, but he'll be responsible for disciplining other immigrant workers and stopping union talk. This isn't just a choice—it's a 'mental health' crisis. The 'acculturative stress' of losing his professional status is already high. This choice pits his desire to regain status against his community, causing depression and self-loathing.",
+                        desires: {
+                            'Parent (David)': "This is a dirty job, but it's $500. It's a desk. It's not lifting boxes. Maybe it's a step back towards the life we lost. But to do it... I'd have to hurt people like us.",
+                            'Parent (Maria)': "Take it! We need the money for Leo's future, for Julia. This is how the system works. If you don't, someone else will. Think of our children!",
+                            'Worker (Juan)': "Don't do it, David. You'd be a 'vendido' (sellout). That money is poison. We are all we have here.",
+                            'Teen (Leo)': "My dad was an accountant. He shouldn't even be in that warehouse. $500 is $500. He should take it so we can get out of this neighborhood."
+                        },
+                        choices: [
+                            {
+                                text: "Take the promotion. The money is too important. (+$500)",
+                                effect: (state) => {
+                                    state.money += 500;
+                                    let david = state.family.find(c => c.name === "David");
+                                    let juan = state.family.find(c => c.name === "Juan");
+                                    david.mentalHealth = Math.max(0, david.mentalHealth - 30); // Guilt, self-loathing
+                                    david.notes = "Hated by his co-workers";
+                                    juan.mentalHealth = Math.max(0, juan.mentalHealth - 20); // Betrayed
+                                    juan.notes = "Distrusts David";
+                                    
+                                    return `David takes the job. The extra $500 helps, but he is depressed and filled with self-loathing. Juan and the other workers now see him as the enemy. He has gained money but lost his community and self-respect.`;
+                                }
+                            },
+                            {
+                                text: "Refuse the promotion. Stay a laborer and keep your dignity.",
+                                effect: (state) => {
+                                    let david = state.family.find(c => c.name === "David");
+                                    let maria = state.family.find(c => c.name === "Maria");
+                                    david.mentalHealth = Math.min(100, david.mentalHealth + 10); // Dignity
+                                    david.notes = "Respected, but still poor";
+                                    maria.mentalHealth = Math.max(0, maria.mentalHealth - 15); // Frustrated
+                                    maria.notes = "Angry about the lost money";
 
-                            return `You forbid ${teen.name} from going. The teen explodes in anger and locks themselves in their room, feeling like a prisoner. The 'Parents' and 'Elders' feel they have maintained order, but a deep rift has formed in the family.`;
-                        }
-                    },
-                    {
-                        text: "Let the teen go. They need to live their own life.",
-                        effect: (state) => {
-                            let teen = state.family.find(c => c.role === "Teen");
-                            let parents = state.family.filter(c => c.role === "Parent" || c.role === "Elder");
-
-                            teen.mentalHealth = Math.min(100, teen.mentalHealth + 20); // Happy, integrated
-                            teen.notes = "Assimilating well";
-                            parents.forEach(p => p.mentalHealth = Math.max(0, p.mentalHealth - 20)); // Stress, fear of loss
-
-                            return `You let ${teen.name} go. They are overjoyed and feel trusted. The 'Parents' and 'Elders' spend the night sick with worry, feeling they have lost control and that their child is becoming a stranger.`;
-                        }
-                    },
-                    {
-                        text: "Compromise: Let them go, but an adult 'Worker' must chaperone.",
-                        effect: (state) => {
-                            let teen = state.family.find(c => c.role === "Teen");
-                            let worker = state.family.find(c => c.role === "Worker");
-                            
-                            teen.mentalHealth = Math.max(0, teen.mentalHealth - 10); // Embarrassed
-                            teen.notes = "Embarrassed but went";
-                            if (worker) {
-                                worker.mentalHealth = Math.max(0, worker.mentalHealth - 10); // Annoyed, lost free time
+                                    return `David refuses. He tells his boss he'sjust there to work. He's still a laborer, but he has the respect of his peers. Maria is furious about the lost income, and the pressure on their son Leo increases.`;
+                                }
+                            },
+                            {
+                                text: "Refuse, and try to organize the other workers ($0).",
+                                effect: (state) => {
+                                    let david = state.family.find(c => c.name === "David");
+                                    let result = `David refuses and quietly warns Juan and Mateo. They try to talk to the other workers. `;
+                                    if(Math.random() < 0.7) { // 70% chance of failure
+                                        david.notes = "Fired for organizing";
+                                        david.mentalHealth = Math.max(0, david.mentalHealth - 20);
+                                        state.family.forEach(c => {
+                                            if (c.healthStatus !== 'Deceased') c.mentalHealth = Math.max(0, c.mentalHealth - 10);
+                                        }); // Family stress
+                                        result += `The boss finds out. David is fired immediately and labeled a troublemaker, making it hard to find other work. The family is now in a desperate financial situation.`;
+                                    } else { // 30% chance of success
+                                        david.notes = "Gained a small raise for all";
+                                        david.mentalHealth = Math.min(100, david.mentalHealth + 20);
+                                        result += `It works! The boss backs down and gives a small raise to everyone to keep them quiet. David is a hero, but he knows he's a marked man.`;
+                                    }
+                                    return result;
+                                }
+                            },
+                            {
+                                text: "Quit. Look for a 'real' office job ($0, risk).",
+                                effect: (state) => {
+                                    let david = state.family.find(c => c.name === "David");
+                                    david.notes = "Unemployed";
+                                    david.mentalHealth = Math.max(0, david.mentalHealth - 40); // Depressed, no income
+                                    state.family.forEach(c => {
+                                        if (c.healthStatus !== 'Deceased') c.mentalHealth = Math.max(0, c.mentalHealth - 10);
+                                    });
+                                    
+                                    return `Insulted, David quits. He spends weeks applying for office jobs, but his accent and lack of 'US experience' mean no one calls him back. He is now unemployed, depressed, and the family's income is cut in half.`;
+                                }
                             }
-
-                            return `You force a compromise. ${teen.name} is mortified but agrees to go with ${worker.name} as a chaperone. The teen doesn't have fun, and the worker is annoyed to waste a Friday night. The 'Parents' feel slightly better, but nobody is happy.`;
-                        }
+                        ]
                     },
                     {
-                        text: "Hold a big family dinner instead to 'remind' the teen of their culture ($100).",
-                        effect: (state) => {
-                            if (state.money < 100) {
-                                return "You can't afford a special dinner. The argument continues.";
+                        title: "Scenario 2: The 'Gifted' Program (Adolescent Paradox)",
+                        description: "Leo (16) is excelling in school. A counselor recommends him for a robotics program ($300 fee) that 'looks great on college applications'. This highlights the 'adolescent paradox': pressure on the 2nd generation. The program has a 'mandatory' parent volunteer night, which David and Maria can't attend due to work. This forces a choice between a child's assimilation and the parents' (already precarious) economic survival.",
+                        desires: {
+                            'Parent (David)': "We were professionals. Our son is gifted. We MUST find the money. This is why we came here. I will work a double shift.",
+                            'Parent (Maria)': "I can't go. I'll be fired if I ask for another night off. Can't you see I'm trying? I feel like I am failing him as a mother.",
+                            'Teen (Leo)': "I... I want to do it. But $300 is so much. And... if you can't come to the parent night, all the other parents will see. Maybe I should just say no.",
+                            'Teen (Julia)': "Why does Leo get everything? I'm struggling and no one cares. You're going to spend $300 on him?"
+                        },
+                        choices: [
+                            {
+                                text: "Pay the $300. David works overtime. ($-300)",
+                                effect: (state) => {
+                                    state.money -= 300;
+                                    let leo = state.family.find(c => c.name === "Leo");
+                                    let david = state.family.find(c => c.name === "David");
+                                    let maria = state.family.find(c => c.name === "Maria");
+                                    leo.mentalHealth = Math.min(100, leo.mentalHealth + 20);
+                                    leo.notes = "In robotics program";
+                                    david.health = Math.max(20, david.health - 10); // Exhaustion
+                                    david.mentalHealth = Math.max(0, david.mentalHealth - 10);
+                                    david.notes = "Working double shifts";
+                                    maria.mentalHealth = Math.max(0, maria.mentalHealth - 10); // Guilt
+                                    maria.notes = "Missed parent night";
+                                    return `You pay the $300. Leo is thrilled. David takes on double shifts to cover it, leaving him exhausted. Maria feels guilty she can't go to the parent night, and Leo feels the pressure to succeed.`;
+                                }
+                            },
+                            {
+                                text: "Tell Leo he can't go. The money is needed for rent.",
+                                effect: (state) => {
+                                    let leo = state.family.find(c => c.name === "Leo");
+                                    let david = state.family.find(c => c.name === "David");
+                                    leo.mentalHealth = Math.max(0, leo.mentalHealth - 20);
+                                    leo.notes = "Missed opportunity, resentful";
+                                    david.mentalHealth = Math.max(0, david.mentalHealth - 15); // Feels like a failure
+                                    david.notes = "Couldn't provide for his son";
+                                    return `You tell Leo no. He is quiet but clearly crushed, feeling his dreams are impossible here. David feels like a failure for not being able to provide. The family saves money, but at a high mental health cost.`;
+                                }
+                            },
+                            {
+                                text: "Pay the $300, but Leo has to lie about why his parents aren't at the event.",
+                                effect: (state) => {
+                                    state.money -= 300;
+                                    let leo = state.family.find(c => c.name === "Leo");
+                                    leo.mentalHealth = Math.max(0, leo.mentalHealth - 10); // Guilt/shame
+                                    leo.notes = "In program, but feels ashamed";
+                                    return `You pay the $300, but tell Leo to make an excuse. He goes, but feels ashamed and isolated when all the other parents are there. He is in the program, but his stress and sense of 'being different' increases.`;
+                                }
+                            },
+                            {
+                                text: "Use the $300 to get a tutor for Julia instead.",
+                                effect: (state) => {
+                                    state.money -= 300;
+                                    let leo = state.family.find(c => c.name === "Leo");
+                                    let julia = state.family.find(c => c.name === "Julia");
+                                    leo.mentalHealth = Math.max(0, leo.mentalHealth - 25);
+                                    leo.notes = "Sacrificed for his sister";
+                                    julia.mentalHealth = Math.min(100, julia.mentalHealth + 20);
+                                    julia.notes = "Getting help, feels seen";
+                                    return `You make a hard choice, telling Leo no and instead hiring a tutor for Julia. Julia's mental health improves as she starts to understand her schoolwork. Leo is deeply resentful, feeling his success was sacrificed.`;
+                                }
                             }
-                            state.money -= 100;
-                            let teen = state.family.find(c => c.role === "Teen");
-                            let parents = state.family.filter(c => c.role === "Parent" || c.role === "Elder");
+                        ]
+                    },
+                    {
+                        title: "Scenario 3: The Sick Worker's Bill (Healthy Immigrant Effect)",
+                        description: "Juan (45) has a severe cough. A $300 clinic visit reveals pneumonia. He MUST rest for two weeks. This is the 'healthy immigrant effect' in action: Juan, from the 1st generation, will try to work through the illness. But if he does, it could become critical. This scenario also introduces the 'salmon bias' hypothesis: is sending him 'home' to recover (or die) a valid option?",
+                        desires: {
+                            'Parent (David)': "If Juan doesn't work, we all suffer. He's sick, but is he 'dying'? We need to be practical. We can't afford two weeks of no pay.",
+                            'Worker (Juan)': "I... I can work. I'm fine. *coughs* I just need some tea. Don't spend more money on me. I'll be fine.",
+                            'Worker (Rosa)': "He is NOT fine! He's burning up. If he doesn't rest, this will kill him. I don't care about the money, I care about my husband!",
+                            'Teen (Leo)': "This is why we're all stressed. Juan is sick, Dad is upset... this whole situation is impossible."
+                        },
+                        choices: [
+                            {
+                                text: "Force Juan to rest for 2 weeks. The family lives on savings. ($-600)",
+                                effect: (state) => {
+                                    state.money -= 600; // Lost income
+                                    let juan = state.family.find(c => c.name === "Juan");
+                                    juan.health = Math.min(100, juan.health + 30);
+                                    juan.notes = "Recovered";
+                                    state.family.forEach(c => {
+                                        if (c.healthStatus !== 'Deceased') c.mentalHealth = Math.max(0, c.mentalHealth - 10);
+                                    }); // Stress
+                                    
+                                    return `You force Juan to rest. The family's savings are wiped out, and everyone is stressed about money, but Juan makes a full recovery. His health is restored, but the family is financially critical.`;
+                                }
+                            },
+                            {
+                                text: "Juan works, but only half-days. ($-300 income loss)",
+                                effect: (state) => {
+                                    state.money -= 300; // Half income
+                                    let juan = state.family.find(c => c.name === "Juan");
+                                    juan.health = Math.max(10, juan.health - 20); // Gets worse
+                                    juan.notes = "Pneumonia worsened, went to ER";
+                                    state.money -= 700; // ER cost after all
+                                    
+                                    return `Juan tries to work half-days. After three days, he collapses. The pneumonia got worse. He is now in 'Critical' condition, and you have to spend an additional $700 on an ER visit he never would have needed.`;
+                                }
+                            },
+                            {
+                                text: "Juan works through the sickness. The money is essential.",
+                                effect: (state) => {
+                                    let juan = state.family.find(c => c.name === "Juan");
+                                    juan.health = Math.max(0, juan.health - 40); // Gets much worse
+                                    juan.notes = "Developed severe pneumonia, ER visit";
+                                    juan.mentalHealth = Math.max(0, juan.mentalHealth - 20);
+                                    state.money -= 1000; // Emergency ER visit
 
-                            teen.mentalHealth = Math.max(0, teen.mentalHealth - 20); // Feels punished
-                            teen.notes = "Resentful";
-                            parents.forEach(p => p.mentalHealth = Math.min(100, p.mentalHealth + 10));
+                                    return `Juan keeps working. His cough gets worse until he can barely stand. He develops severe pneumonia, and his health becomes 'Critical'. You are forced to take him to the ER, costing $1000. He may not recover.`;
+                                }
+                            },
+                            {
+                                text: "Send Juan and Rosa back to their home country. ($-1000)",
+                                effect: (state) => {
+                                    state.money -= 1000;
+                                    // Remove Juan and Rosa from the game
+                                    state.family.forEach(c => {
+                                        if (c.name === "Juan" || c.name === "Rosa") {
+                                            c.notes = "Sent back (Salmon Bias)";
+                                            c.health = 0; // Mark as removed
+                                            c.healthStatus = "Deceased"; // Use Deceased to filter them out
+                                        }
+                                    });
+                                    // Filter them out
+                                    state.family = state.family.filter(c => c.healthStatus !== "Deceased");
 
-                            return `You spend $100 on a big 'family values' dinner. The 'Elders' and 'Parents' feel good, but the ${teen.name} feels punished and misunderstood. The core issue is unresolved, and the teen's resentment grows.`;
-                        }
+                                    return `You make a terrible choice. You pool your money and buy bus tickets for Juan and Rosa to go home, where they can be cared for by family. This is the 'salmon bias' in action. Your family unit is broken, but Juan might survive.`;
+                                }
+                            }
+                        ]
                     }
                 ]
             },
             {
-                title: "Scenario 3: The Stolen Wages",
-                description: "One of your 'Undocumented' family members (a 'Worker') is a victim of wage theft. Their boss refuses to pay them $800 in back pay, knowing they have no legal recourse. A non-profit lawyer says they *might* be able to help, which could lead to a T-Visa (for trafficking/exploitation victims). But it could also get the worker blacklisted from all local cash jobs... or worse, reported to ICE.",
-                desires: {
-                    'Elder': "Let it go. We are guests in this country. Do not make noise. It is the price we pay. We will find other work. $800 is not worth deportation.",
-                    'Parent': "This is pure exploitation. This is theft. We must talk to the lawyer. This is why these people keep doing this to us—because we are silent and afraid.",
-                    'Worker': "He stole from me! $800 is a month's rent! I want to fight. But if I talk, and he calls 'la migra'? What if *none* of us can find work after this? Is it worth the risk?",
-                    'Teen': "That's illegal! You have to report him! We should post his name on social media and tell everyone what he did!"
-                },
-                choices: [
+                groupIndex: 2, // For Group 3
+                scenarios: [
                     {
-                        text: "Contact the non-profit lawyer and file a claim.",
-                        effect: (state) => {
-                            let victim = state.family.find(c => c.legalStatus === "Undocumented" && c.role === "Worker");
-                            let parents = state.family.filter(c => c.role === "Parent");
-                            let result = "";
+                        title: "Scenario 1: The 'Easy Money' (Risk & Mental Health)",
+                        description: "Your family is down to its last $900. Pedro is offered $1000 to 'hold a package' from a neighbor for 24 hours. The neighbor is clearly involved in gangs. This scenario highlights the high-risk, low-reward choices forced by poverty and 'lack of accessibility' to good jobs. The choice creates intense 'mental health' stress: Ana's fear vs. Pedro's and Luis's desperation.",
+                        desires: {
+                            'Parent (Ana)': "No! Absolutely not! I brought my children here to be safe! This is the danger we left. We will find another way. This is poison money.",
+                            'Worker (Pedro)': "It's one night, Ana! $1000! That's more than we have! We can pay rent, buy food. It's just a package. I'm not a child, I can handle this.",
+                            'Teen (Luis)': "Pedro is right. We're starving. How can you say no? Who cares where it comes from? We need it.",
+                            'Worker (Hector)': "This is a bad idea, Pedro. These are not people you cross. If you take this, you're in their world. It's not worth the risk."
+                        },
+                        choices: [
+                            {
+                                text: "Refuse. Beg for hours at a landscaping day-labor corner ($+80).",
+                                effect: (state) => {
+                                    state.money += 80;
+                                    let pedro = state.family.find(c => c.name === "Pedro");
+                                    let luis = state.family.find(c => c.name === "Luis");
+                                    pedro.mentalHealth = Math.max(0, pedro.mentalHealth - 10);
+                                    pedro.notes = "Angry, feels disrespected";
+                                    luis.mentalHealth = Math.max(0, luis.mentalHealth - 10);
+                                    luis.notes = "Frustrated and hungry";
 
-                            if (Math.random() < 0.5) { // 50% chance of success
-                                state.money += 800;
-                                if(victim) {
-                                    victim.legalStatus = "Pending";
-                                    victim.notes = "T-Visa applicant";
+                                    return `Ana forbids it. Pedro and Hector stand on a corner for 8 hours and get a small job, earning $80. You are safe, but still desperately poor. Pedro is angry, and Luis is frustrated.`;
                                 }
-                                parents.forEach(p => p.mentalHealth = Math.min(100, p.mentalHealth + 20));
-                                result = `The lawyer is amazing! They frighten the boss, who pays the $800. The lawyer files for a T-Visa for ${victim.name}, changing their legal status to 'Pending'. The 'Parents' feel empowered.`;
-                            } else { // 50% chance of failure
-                                let workers = state.family.filter(c => c.role === "Worker");
-                                workers.forEach(w => {
-                                    w.mentalHealth = Math.max(0, w.mentalHealth - 20);
-                                    w.notes = "Blacklisted";
-                                });
-                                result = `The claim fails. The boss is furious. All 'Workers' in the family are fired and blacklisted from the local job network. It is now much harder to find income.`;
-                            }
-                            return result;
-                        }
-                    },
-                    {
-                        text: "Forget the $800. Say nothing and find a new job.",
-                        effect: (state) => {
-                            let victim = state.family.find(c => c.role === "Worker");
-                            let parents = state.family.filter(c => c.role === "Parent");
-                            
-                            if (victim) victim.mentalHealth = Math.max(0, victim.mentalHealth - 20); // Defeated
-                            parents.forEach(p => p.mentalHealth = Math.max(0, p.mentalHealth - 10)); // Ashamed
-                            victim.notes = "Gave up on stolen wages";
+                            },
+                            {
+                                text: "Take the deal. Pray for the best. (+$1000)",
+                                effect: (state) => {
+                                    state.money += 1000;
+                                    let pedro = state.family.find(c => c.name === "Pedro");
+                                    let result = `Pedro takes the deal. He's a nervous wreck. `;
+                                    
+                                    if(Math.random() < 0.6) { // 60% chance it's fine
+                                        pedro.mentalHealth = Math.min(100, pedro.mentalHealth + 10);
+                                        pedro.notes = "Did a 'favor' for the neighbor";
+                                        result += `The next day, the neighbor picks up the package and hands Pedro $1000. It worked. You have money... but the neighbor now knows you'll do him 'favors'.`;
+                                    } else { // 40% chance of disaster
+                                        pedro.notes = "Arrested, deportation";
+                                        state.family.forEach(c => {
+                                            if (c.healthStatus !== 'Deceased') c.mentalHealth = Math.max(0, c.mentalHealth - 40);
+                                        });
+                                        result += `The police raid the apartment, tipped off by a rival. They find the drugs. Pedro is arrested. Because he is 'Undocumented', he is put into deportation proceedings. The family is broken and in danger.`;
+                                    }
+                                    return result;
+                                }
+                            },
+                            {
+                                text: "Take the deal, but have Hector (the friend) hold it.",
+                                effect: (state) => {
+                                    state.money += 1000;
+                                    let hector = state.family.find(c => c.name === "Hector");
+                                    hector.notes = "Took a huge risk";
+                                    hector.mentalHealth = Math.max(0, hector.mentalHealth - 20); // Stress
+                                    
+                                    return `You convince Hector to hold the package, as he is less impulsive. The hand-off is successful. You get the $1000. But you have put your friend in terrible danger, and he knows it. The trust between you is damaged.`;
+                                }
+                            },
+                            {
+                                text: "Report the neighbor to the police.",
+                                effect: (state) => {
+                                    state.family.forEach(c => {
+                                        if (c.healthStatus !== 'Deceased') c.mentalHealth = Math.max(0, c.mentalHealth - 30);
+                                    });
+                                    let ana = state.family.find(c => c.name === "Ana");
+                                    ana.notes = "Targeted by gang";
 
-                            return `You decide the risk is too high. You let the $800 go. The boss wins. ${victim.name} feels defeated and loses health from the stress. The 'Parents' feel ashamed. You are safe, but you have lost money and dignity.`;
-                        }
-                    },
-                    {
-                        text: "Confront the boss directly as a family.",
-                        effect: (state) => {
-                            let result = "The whole family goes to the boss's office. He is surprised. ";
-                            let undocumented = state.family.find(c => c.legalStatus === "Undocumented");
-
-                            let roll = Math.random();
-                            if (roll < 0.3) { // 30% chance he pays
-                                state.money += 800;
-                                result += "He is intimidated by your numbers and pays the $800, telling you to never come back.";
-                            } else if (roll < 0.8) { // 50% chance he fires
-                                let workers = state.family.filter(c => c.role === "Worker");
-                                workers.forEach(w => w.notes = "Fired");
-                                result += "He laughs in your face and tells all 'Workers' they are fired. You get nothing.";
-                            } else { // 20% chance he calls ICE
-                                if (undocumented) {
-                                    undocumented.health = 10;
-                                    undocumented.healthStatus = "Critical";
-                                    undocumented.mentalHealth = 10;
-                                    undocumented.mentalHealthStatus = "Depressed";
-                                    undocumented.notes = "In deportation proceedings";
-                                    result += `He calls the police and claims you are trespassing. The police ask for papers. ${undocumented.name} is 'Undocumented' and is detained by ICE.`;
-                                } else {
-                                    result += "He calls the police, but everyone has 'Pending' status, so they just tell you to leave. A terrifyingly close call."
+                                    return `Ana calls the police. They take a report but do nothing. The neighbor finds out. Your family is now being actively threatened. You are in more danger than before. Your mental health plummets.`;
                                 }
                             }
-                            return result;
-                        }
+                        ]
                     },
                     {
-                        text: "Ask a community leader/church to mediate ($50 'donation').",
-                        effect: (state) => {
-                            if (state.money < 50) return "You can't even afford the donation.";
-                            
-                            state.money -= 50;
-                            let result = "You ask a local priest to mediate, giving a $50 donation. ";
+                        title: "Scenario 2: The School Truancy (Mental Health Barrier)",
+                        description: "Sofia (13) is 'Depressed' from pre-migration trauma and is refusing to go to school. A social worker calls Ana and says if Sofia isn't in school tomorrow, she will 'file a truancy report', which could affect Ana's 'Pending Asylum' case. This is a direct 'barrier to mental health care': the system sees a 'problem kid' (truancy), not a 'traumatized kid' (mental health), and the 'solution' threatens the family's legal survival.",
+                        desires: {
+                            'Parent (Ana)': "My asylum case! They will take my children! Sofia, you MUST go. Why are you doing this to me? I can't lose you.",
+                            'Teen (Sofia)': "I... I can't. The hallways... the noise... it's too much. I feel like I can't breathe. I'm not trying to hurt you, Mami. I'm just... scared.",
+                            'Teen (Luis)': "Leave her alone! You don't get it! She's not being bad, she's sad! I'll... I'll drop out and stay with her. I'll get a job. It's fine.",
+                            'Worker (Pedro)': "This is America, you go to school. Just drag her there. She'll get over it. We all have problems."
+                        },
+                        choices: [
+                            {
+                                text: "Physically force Sofia to go to school. The law is the law.",
+                                effect: (state) => {
+                                    let sofia = state.family.find(c => c.name === "Sofia");
+                                    let ana = state.family.find(c => c.name === "Ana");
+                                    sofia.mentalHealth = Math.max(0, sofia.mentalHealth - 40); // Trauma
+                                    sofia.notes = "Forced to school, re-traumatized";
+                                    ana.notes = "Case is safe for now";
+                                    
+                                    return `Ana and Pedro drag a sobbing Sofia to school. The social worker is satisfied. Sofia spends the day having panic attacks in the nurse's office. Her mental health is now 'Depressed' (0), and her trust in Ana is broken.`;
+                                }
+                            },
+                            {
+                                text: "Ana skips her job to go to the school and explain the trauma.",
+                                effect: (state) => {
+                                    let ana = state.family.find(c => c.name === "Ana");
+                                    let sofia = state.family.find(c => c.name === "Sofia");
+                                    let result = `Ana skips her cleaning job and is fired. She goes to the school and explains the situation. `;
+                                    
+                                    if(Math.random() < 0.5) { // 50% chance of good social worker
+                                        ana.notes = "Unemployed, but Sofia is safe";
+                                        sofia.mentalHealth = Math.min(100, sofia.mentalHealth + 10);
+                                        result += `The social worker is understanding and finds a free counseling service for Sofia. Ana lost her job, but Sofia finally has help and feels understood.`;
+                                    } else { // 50% chance of bad one
+                                        ana.notes = "Unemployed, reported to CPS";
+                                        ana.mentalHealth = Math.max(0, ana.mentalHealth - 30);
+                                        result += `The social worker doesn't understand and files a report for 'educational neglect'. Ana is fired, and now she is being investigated. The family is in critical danger.`;
+                                    }
+                                    return result;
+                                }
+                            },
+                            {
+                                text: "Luis (15) stays home from school to watch Sofia.",
+                                effect: (state) => {
+                                    let luis = state.family.find(c => c.name === "Luis");
+                                    let sofia = state.family.find(c => c.name === "Sofia");
+                                    luis.mentalHealth = Math.max(0, luis.mentalHealth - 15);
+                                    luis.notes = "Skipping school, at risk";
+                                    sofia.mentalHealth = Math.min(100, sofia.mentalHealth + 5);
+                                    
+                                    return `Luis stays home to watch Sofia, forging his own absence notes. Ana can go to work. Sofia feels safe, but now Luis is skipping school, putting his own future and 'assimilation' at risk. You've just traded one truancy problem for another.`;
+                                }
+                            },
+                            {
+                                text: "Pull Sofia out of school. Hide her when the social worker visits.",
+                                effect: (state) => {
+                                    let sofia = state.family.find(c => c.name === "Sofia");
+                                    let ana = state.family.find(c => c.name === "Ana");
+                                    sofia.mentalHealth = Math.max(0, sofia.mentalHealth - 10);
+                                    sofia.notes = "Hiding, isolated";
+                                    ana.mentalHealth = Math.max(0, ana.mentalHealth - 20); // Constant fear
+                                    ana.notes = "Lying to authorities";
 
-                            if (Math.random() < 0.5) {
-                                state.money += 400;
-                                result += "The boss, respecting the priest, agrees to pay *half* the wages ($400) to 'make the problem go away.' You accept the compromise.";
-                            } else {
-                                result += "The priest tries, but the boss refuses. You are out $50 and still have no wages. The priest apologizes for his powerlessness.";
+                                    return `You pull Sofia from school and tell her to hide. The family now lives in constant fear of a knock on the door. This extreme stress and isolation makes everyone's mental health worse.`;
+                                }
                             }
-                            return result;
-                        }
+                        ]
+                    },
+                    {
+                        title: "Scenario 3: The Broken Taillight (Chilling Effect)",
+                        description: "Hector is driving Ana and Pedro home when a police car flashes its lights—a broken taillight. Hector and Pedro are 'Undocumented'. Ana is 'Pending Asylum'. This is the 'chilling effect' personified. A simple ticket for a native-born person is a potential life-ruining event for this family, creating extreme 'mental health' stress and forcing an impossible choice based on fear of 'lack of accessibility' to justice.",
+                        desires: {
+                            'Parent (Ana)': "Oh god, no. My case. My children. I have to distance myself. Hector, what do we do? I can't be arrested.",
+                            'Worker (Pedro)': "I'm not going back. I'll run. I can make it.",
+                            'Worker (Hector)': "Everyone stay calm. Don't run. Let me talk. Ana, maybe you should say you don't know us, that we were just giving you a ride.",
+                            'Teen (Luis - at home)': "My mom is late. She's always late. But this... this feels different."
+                        },
+                        choices: [
+                            {
+                                text: "Let Hector do all the talking. Everyone stays quiet.",
+                                effect: (state) => {
+                                    let hector = state.family.find(c => c.name === "Hector");
+                                    let pedro = state.family.find(c => c.name === "Pedro");
+                                    let ana = state.family.find(c => c.name === "Ana");
+                                    let result = `Hector calmly talks to the officer. He gives his (fake) name. `;
+                                    
+                                    if(Math.random() < 0.4) { // 40% chance of bad cop
+                                        hector.notes = "Arrested, deportation";
+                                        pedro.notes = "Arrested, deportation";
+                                        ana.notes = "Asylum case in jeopardy";
+                                        state.family.forEach(c => {
+                                            if (c.healthStatus !== 'Deceased') c.mentalHealth = Math.max(0, c.mentalHealth - 40);
+                                        });
+                                        result += `The officer is suspicious. He runs their names, finds they aren't in the system, and detains all three. Hector and Pedro are sent to a detention center. Ana is released, but her asylum case is now in grave danger.`;
+                                    } else { // 60% chance of good cop
+                                        ana.mentalHealth = Math.max(0, ana.mentalHealth - 10);
+                                        pedro.mentalHealth = Math.max(0, pedro.mentalHealth - 10);
+                                        hector.mentalHealth = Math.max(0, hector.mentalHealth - 10);
+                                        result += `The officer is just annoyed. He writes Hector a ticket for the taillight and lets them go with a warning. The entire family is badly shaken but safe. The mental stress is immense.`;
+                                    }
+                                    return result;
+                                }
+                            },
+                            {
+                                text: "Pedro makes a run for it. Create a distraction.",
+                                effect: (state) => {
+                                    let pedro = state.family.find(c => c.name === "Pedro");
+                                    let result = `As the officer approaches, Pedro bolts. The officer yells and chases him. `;
+                                    if(Math.random() < 0.3) { // 30% chance he gets away
+                                        pedro.notes = "On the run, hiding";
+                                        pedro.mentalHealth = Math.max(0, pedro.mentalHealth - 30); // Scared
+                                        result += `Pedro gets away, disappearing into an alley. The officer comes back, furious, but lets Ana and Hector go with a warning. Pedro is now in hiding, separated from the family.`;
+                                    } else { // 70% chance he's caught
+                                        pedro.notes = "Arrested, deportation";
+                                        pedro.health = Math.max(40, pedro.health - 30); // Roughed up
+                                        result += `The officer tackles Pedro hard. He is arrested for 'resisting'. He is now in deportation proceedings and his health is 'Sick' from the arrest. The family is devastated.`;
+                                    }
+                                    return result;
+                                }
+                            },
+                            {
+                                text: "Ana speaks. She shows her asylum papers and explains the situation calmly.",
+                                effect: (state) => {
+                                    let ana = state.family.find(c => c.name === "Ana");
+                                    let result = `Ana steps up, her hands shaking, and presents her asylum paperwork. She explains Hector is a friend helping her. `;
+                                    if(Math.random() < 0.5) { // 50% chance of compassionate cop
+                                        ana.mentalHealth = Math.min(100, ana.mentalHealth + 10); // Empowered
+                                        result += `The officer looks at her, at the groceries. He nods, tells Hector to fix the taillight, and leaves. Ana is terrified but feels a small surge of empowerment. It worked.`;
+                                    } else { // 50% chance of by-the-book cop
+                                        ana.notes = "Asylum case in jeopardy";
+                                        ana.mentalHealth = Math.max(0, ana.mentalHealth - 20);
+                                        result += `The officer doesn't care. He takes everyone's information. He lets them go, but he has noted Ana's association with 'illegals'. This could be used against her. The 'chilling effect' is real.`;
+                                    }
+                                    return result;
+                                }
+                            },
+                            {
+                                text: "Ana says 'I don't know them, they were just giving me a ride.'",
+                                effect: (state) => {
+                                    let ana = state.family.find(c => c.name === "Ana");
+                                    let pedro = state.family.find(c => c.name === "Pedro");
+                                    let hector = state.family.find(c => c.name === "Hector");
+                                    
+                                    ana.mentalHealth = Math.max(0, ana.mentalHealth - 30); // Guilt, shame
+                                    ana.notes = "Betrayed her family";
+                                    pedro.mentalHealth = Math.max(0, pedro.mentalHealth - 40); // Betrayed
+                                    hector.mentalHealth = Math.max(0, hector.mentalHealth - 40); // Betrayed
+                                    hector.notes = "Arrested, deportation";
+                                    pedro.notes = "Arrested, deportation";
+
+                                    return `In a moment of pure panic, Ana betrays them. The officer separates her, and she repeats her lie. The officer, seeing them as suspicious, detains Hector and Pedro. They are deported. Ana is safe, but she has sacrificed her family and is 'Depressed' from the guilt.`;
+                                }
+                            }
+                        ]
                     }
                 ]
             }
@@ -549,44 +1033,51 @@
             game: document.getElementById('game-screen'),
             end: document.getElementById('end-screen')
         };
+        
         const startButton = document.getElementById('start-button');
-        const familySelectButtons = document.querySelectorAll('.select-family-btn');
+        const characterSelectButtons = document.querySelectorAll('.select-family-btn');
         const moneyStat = document.getElementById('money-stat');
         const familyStatusContainer = document.getElementById('family-status-container');
-        
+
         const scenarioView = document.getElementById('scenario-view');
         const scenarioTitle = document.getElementById('scenario-title');
         const scenarioDescription = document.getElementById('scenario-description');
         const desiresContainer = document.getElementById('desires-container');
         const choicesContainer = document.getElementById('choices-container');
-        
+
         const resultView = document.getElementById('result-view');
         const resultTitle = document.getElementById('result-title');
         const resultText = document.getElementById('result-text');
         const nextScenarioBtn = document.getElementById('next-scenario-btn');
-        
+
+        const endScreen = document.getElementById('end-screen');
         const finalMoney = document.getElementById('final-money');
         const finalFamilyStatus = document.getElementById('final-family-status');
         const finalSummaryText = document.getElementById('final-summary-text');
         const restartBtn = document.getElementById('restart-btn');
 
-        // --- Core Game Logic ---
+
+        // --- GAME LOGIC ---
 
         // Utility: Show a single screen
         function showScreen(screenName) {
-            Object.values(screens).forEach(screen => screen.classList.remove('active'));
+            Object.values(screens).forEach(screen => {
+                screen.classList.remove('active');
+            });
             screens[screenName].classList.add('active');
             gameState.screen = screenName;
         }
 
         // Utility: Update character status string based on health
         function updateCharacterStatuses(char) {
-            if (char.healthStatus === 'Deceased') return; // Don't revive
-            
-            if (char.notes && char.notes.includes("deportation")) {
-                char.healthStatus = "Critical"; // Override
-                char.mentalHealthStatus = "Depressed";
-                return;
+            // Check for permanent states first
+            if (char.healthStatus === 'Deceased' || (char.notes && (char.notes.includes("deportation") || char.notes.includes("Sent back")))) {
+                if (char.healthStatus === 'Deceased') return;
+                if (char.notes && (char.notes.includes("deportation") || char.notes.includes("Sent back"))) {
+                    char.healthStatus = "Detained";
+                    char.mentalHealthStatus = "Depressed";
+                    return;
+                }
             }
 
             // Update Physical Health Status
@@ -625,11 +1116,20 @@
                 card.className = 'theme-card border theme-border rounded-lg p-3 text-sm shadow-sm';
                 
                 // Format legal status for class name
-                const legalStatusClass = `status-${char.legalStatus.toLowerCase().replace(' ', '-')}`;
+                let legalStatusClass = `status-${char.legalStatus.toLowerCase().replace(' ', '-')}`;
+
+                // Determine final status text and class
+                let physicalStatusText = char.healthStatus;
+                let physicalStatusClass = `status-${char.healthStatus.toLowerCase()}`;
+                
+                if (char.notes && (char.notes.includes("deportation") || char.notes.includes("Sent back"))) {
+                    physicalStatusText = "Detained";
+                    physicalStatusClass = "status-detained";
+                }
 
                 card.innerHTML = `
                     <h4 class="font-bold text-base">${char.name} <span class="text-xs">(${char.age})</span></h4>
-                    <p>Health: <span class="font-bold status-${char.healthStatus.toLowerCase()}">${char.healthStatus} (${char.health})</span></p>
+                    <p>Health: <span class="font-bold ${physicalStatusClass}">${physicalStatusText} ${physicalStatusText !== 'Detained' ? `(${char.health})` : ''}</span></p>
                     <p>Mental: <span class="font-bold status-${char.mentalHealthStatus.toLowerCase()}">${char.mentalHealthStatus} (${char.mentalHealth})</span></p>
                     <p>Legal: <span class="font-bold ${legalStatusClass}">${char.legalStatus}</span></p>
                     ${char.notes ? `<p class="text-xs italic text-gray-500 mt-1">${char.notes}</p>` : ''}
@@ -638,75 +1138,69 @@
             });
         }
 
-        // Load a scenario by index
-        function loadScenario(index) {
-            // First, update the character cards
-            updateStatsUI();
+        // Load a scenario
+        function loadScenario(scenarioIndex) {
+            // Use the new activeScenarios from the gameState
+            if (scenarioIndex >= gameState.activeScenarios.length) {
+                endGame();
+                return;
+            }
 
-            const scenario = scenarios[index];
+            const scenario = gameState.activeScenarios[scenarioIndex];
+            gameState.currentScenarioIndex = scenarioIndex;
+
             scenarioTitle.textContent = scenario.title;
             scenarioDescription.textContent = scenario.description;
 
-            // Load Desires
+            // Populate desires
             desiresContainer.innerHTML = '';
-            const scenarioDesires = scenario.desires;
-            const relevantRoles = new Set(gameState.family.map(c => c.role));
-            
-            for (const [role, desire] of Object.entries(scenarioDesires)) {
-                if (relevantRoles.has(role)) {
-                    const desireEl = document.createElement('div');
-                    desireEl.innerHTML = `<strong class="theme-text">${role}s:</strong> "${desire}"`;
-                    desiresContainer.appendChild(desireEl);
-                }
+            for (const [role, desire] of Object.entries(scenario.desires)) {
+                const p = document.createElement('p');
+                p.innerHTML = `<strong class="theme-text text-opacity-80">${role}:</strong> "${desire}"`;
+                desiresContainer.appendChild(p);
             }
-            
-            // Load Choices
-            choicesContainer.innerHTML = ''; // Clear old choices
-            scenario.choices.forEach((choice, choiceIndex) => {
+
+            // Populate choices
+            choicesContainer.innerHTML = '';
+            scenario.choices.forEach((choice, index) => {
                 const button = document.createElement('button');
                 button.className = 'theme-button text-left';
-                button.innerHTML = choice.text;
-                button.onclick = () => makeChoice(index, choice);
+                button.textContent = choice.text;
+                button.addEventListener('click', () => makeChoice(index), { once: true });
                 choicesContainer.appendChild(button);
             });
 
             // Show scenario, hide result
             scenarioView.style.display = 'block';
             resultView.style.display = 'none';
+
+            // Update stats
+            updateStatsUI();
         }
 
-        // Process a player's choice
-        function makeChoice(scenarioIndex, choice) {
-            // Call the effect function, which modifies gameState
+        // Handle a player's choice
+        function makeChoice(choiceIndex) {
+            // Use the new activeScenarios from the gameState
+            const scenario = gameState.activeScenarios[gameState.currentScenarioIndex];
+            const choice = scenario.choices[choiceIndex];
+
+            // Apply the effect
             const resultString = choice.effect(gameState);
 
-            // Update result text
-            resultText.innerHTML = resultString;
-            
-            // Update all UI elements
-            updateStatsUI();
-            
-            // Show result, hide scenario
+            // Update UI with the result
+            resultText.textContent = resultString;
             scenarioView.style.display = 'none';
             resultView.style.display = 'block';
+
+            // Update stats
+            updateStatsUI();
         }
 
-        // Move to the next scenario or end the game
-        function nextScenario() {
-            gameState.currentScenarioIndex++;
-            
-            if (gameState.currentScenarioIndex >= scenarios.length) {
-                showEndGame();
-            } else {
-                loadScenario(gameState.currentScenarioIndex);
-            }
-        }
-
-        // Display the final end game screen
-        function showEndGame() {
+        // End the game
+        function endGame() {
             finalMoney.textContent = gameState.money;
+            finalFamilyStatus.innerHTML = '';
             
-            finalFamilyStatus.innerHTML = ''; // Clear
             let deceasedCount = 0;
             let criticalCount = 0;
             let detainedCount = 0;
@@ -714,23 +1208,26 @@
 
             gameState.family.forEach(char => {
                 updateCharacterStatuses(char); // Final update
-                if (char.healthStatus === 'Deceased') deceasedCount++;
-                if (char.notes && char.notes.includes("deportation")) {
-                    detainedCount++;
-                    char.healthStatus = "Detained"; // Final status
-                }
-                if (char.healthStatus === 'Critical') criticalCount++;
-                if (char.mentalHealthStatus === 'Depressed') depressedCount++;
                 
                 let finalStatusText = char.healthStatus;
-                if(char.healthStatus === 'Critical' && detainedCount > 0) {
+                
+                if (char.healthStatus === 'Deceased') {
+                    deceasedCount++;
+                } else if (char.notes && (char.notes.includes("deportation") || char.notes.includes("Sent back"))) {
+                    detainedCount++;
                     finalStatusText = "Detained";
+                } else if (char.healthStatus === 'Critical') {
+                    criticalCount++;
+                }
+
+                if (char.mentalHealthStatus === 'Depressed') {
+                    depressedCount++;
                 }
 
                 const statusEntry = document.createElement('div');
                 statusEntry.className = 'p-2 border theme-border rounded';
                 statusEntry.innerHTML = `
-                    <span class.="font-bold">${char.name}</span>: 
+                    <span class="font-bold">${char.name}</span>: 
                     <span class="font-bold status-${finalStatusText.toLowerCase()}">${finalStatusText}</span> / 
                     <span class="font-bold status-${char.mentalHealthStatus.toLowerCase()}">${char.mentalHealthStatus}</span>
                 `;
@@ -750,36 +1247,24 @@
             } else if (gameState.money < 200) {
                 summary = "Your family is healthy and together, but you have almost no money left. The road ahead will be one of financial struggle.";
             } else {
-                summary = "Through a combination of luck and difficult choices, your family has arrived intact, with some money to start over. You have a foothold.";
+                summary = "You made it through. Your family is together, healthy, and has some money saved. You have navigated the challenges with resilience and care.";
             }
-            finalSummaryText.textContent = summary + " Reflect on the choices you made. What would you do differently? What sacrifices did you make?";
+            finalSummaryText.textContent = summary;
 
             showScreen('end');
         }
 
-        // Restart the game
-        function restartGame() {
-            // Reset game state
-            gameState = {
-                screen: 'start',
-                family: [],
-                money: 0,
-                currentScenarioIndex: 0
-            };
-            showScreen('start');
-        }
-
-// --- Event Listeners ---
-
-        // Start Button
+        // --- Event Listeners ---
+        
+        // Start button
         startButton.addEventListener('click', () => {
             showScreen('characterSelect');
         });
 
-        // Family Selection Buttons
-        familySelectButtons.forEach(button => {
+        // Family selection buttons
+        characterSelectButtons.forEach(button => {
             button.addEventListener('click', (e) => {
-                const groupIndex = parseInt(e.target.dataset.group);
+                const groupIndex = parseInt(e.target.dataset.group, 10);
                 const selectedGroup = familyGroups[groupIndex];
                 
                 // Deep copy the family members to avoid modifying the original data
@@ -787,23 +1272,41 @@
                 gameState.money = selectedGroup.startMoney;
                 gameState.currentScenarioIndex = 0;
                 
+                // --- NEW LOGIC ---
+                // Find the correct set of scenarios and load them into the state
+                const scenarioSet = allScenarios.find(set => set.groupIndex === groupIndex);
+                if (scenarioSet) {
+                    gameState.activeScenarios = scenarioSet.scenarios;
+                } else {
+                    console.error("No scenarios found for group index:", groupIndex);
+                    gameState.activeScenarios = []; // Default to empty to prevent errors
+                }
+                
                 // Load the first scenario, which will also call updateStatsUI
                 loadScenario(0);
                 showScreen('game');
             });
         });
 
-        // Next Scenario Button
-        nextScenarioBtn.addEventListener('click', nextScenario);
+        // Next scenario button
+        nextScenarioBtn.addEventListener('click', () => {
+            loadScenario(gameState.currentScenarioIndex + 1);
+        });
 
-        // Restart Button
-        restartBtn.addEventListener('click', restartGame);
+        // Restart button
+        restartBtn.addEventListener('click', () => {
+            // Reset game state
+            gameState.family = [];
+            gameState.money = 0;
+            gameState.currentScenarioIndex = 0;
+            gameState.activeScenarios = []; // Clear the active scenarios
+            showScreen('characterSelect'); // Go back to char select
+        });
 
-        // --- Initial Load ---
-        showScreen('start'); // Show the start screen by default
-    
+        // Initial setup
+        showScreen('start');
+
     </script>
 </body>
 </html>
-
 
